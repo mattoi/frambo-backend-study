@@ -9,7 +9,6 @@ You'll be able to find the docs for the backend and frontend apps in their respe
 
 ### TODO
 - Fill the tables with some data
-- Create models
 - Create repositories (with tests)
 - Create controllers (with tests) (the endpoints are already defined in an external file)
 - Write docs for the endpoints
