@@ -8,7 +8,6 @@ I'm not planning on hosting either app on a server, so they'll have to be run lo
 You'll be able to find the docs for the backend and frontend apps in their respective READMEs.
 
 ### TODO
-- Create a SQL schema for the database (the tables are already defined in an external file)
 - Fill the tables with some data
 - Create models
 - Create repositories (with tests)
