@@ -1,7 +1,12 @@
 package com.mattoi.frambo_mock.client;
 
-import org.springframework.data.repository.ListCrudRepository;
+@Repository
+public class ClientRepository {
 
-public interface ClientRepository extends ListCrudRepository<Client, Integer> {
+    private final JdbcClient jdbcClient;    
+    private static final Logger log = LoggerFactory.getLogger(ClientRepository.class);
 
+    public ClientRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
 }

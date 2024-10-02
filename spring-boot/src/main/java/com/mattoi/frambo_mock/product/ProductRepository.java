@@ -1,7 +1,12 @@
 package com.mattoi.frambo_mock.product;
 
-import org.springframework.data.repository.ListCrudRepository;
+@Repository
+public class ProductRepository{
 
-public interface ProductRepository extends ListCrudRepository<Product, Integer> {
+    private final JdbcClient jdbcClient;    
+    private static final Logger log = LoggerFactory.getLogger(ProductRepository.class);
 
+    public ProductRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
 }

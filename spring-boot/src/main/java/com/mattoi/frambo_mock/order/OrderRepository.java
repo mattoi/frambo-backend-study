@@ -1,7 +1,11 @@
 package com.mattoi.frambo_mock.order;
 
-import org.springframework.data.repository.ListCrudRepository;
+@Repository
+public class OrderRepository {
+    private final JdbcClient jdbcClient;    
+    private static final Logger log = LoggerFactory.getLogger(OrderRepository.class);
 
-public interface OrderRepository extends ListCrudRepository<Order, Integer> {
-
+    public OrderRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
 }
