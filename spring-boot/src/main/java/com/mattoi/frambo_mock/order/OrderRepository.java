@@ -8,4 +8,11 @@ public class OrderRepository {
     public OrderRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
+
+    //TODO post create (order fields + order items ..)
+    //TODO put cancelOrder(id)
+    //TODO get findAll()
+    //TODO get findById(id)
+    //TODO get findAllByClientId(id)
+    //TODO get findAllByStatus(statusId)
 }
