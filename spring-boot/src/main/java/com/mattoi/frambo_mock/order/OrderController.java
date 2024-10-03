@@ -12,5 +12,10 @@ public class OrderController {
         this.orderRepository = repository;
     }
 
-    // TODO bring order api functions from notes
+    // TODO post create (order fields + order items ..)
+    // TODO put cancelOrder(id)
+    // TODO get findAll()
+    // TODO get findById(id)
+    // TODO get findAllByClientId(id)
+    // TODO get findAllByStatus(statusId)
 }

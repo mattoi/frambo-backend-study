@@ -11,5 +11,9 @@ public class ClientController {
     public ClientController(ClientRepository repository) {
         this.clientRepository = repository;
     }
-    // TODO bring client api functions from notes
+    // TODO post create(client fields..)
+    // TODO put update(client fields..)
+    // TODO get findAll()
+    // TODO get findById(id)
+    // TODO delete delete(id)
 }

@@ -12,5 +12,15 @@ public class ProductController {
         this.productRepository = repository;
     }
 
-    // TODO bring product api functions from notes
+    // TODO post create(product fields..)
+    // TODO put update(product fields..)
+    // TODO put setProductAvailability(id, inStock)
+    // TODO get findAll()
+    // TODO get findAllInStock()
+    // TODO get findById(id)
+    // TODO delete delete(id)
+    // TODO post createCategory(name)
+    // TODO put updateCategory(id, newName)
+    // TODO get findAllCategories()
+    // TODO delete deleteCategory(id)
 }
