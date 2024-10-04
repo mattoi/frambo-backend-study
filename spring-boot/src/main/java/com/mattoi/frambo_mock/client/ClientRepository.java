@@ -19,7 +19,8 @@ public class ClientRepository {
     }
 
     public void create(Client client) {
-        var updated = jdbcClient.sql("INSERT INTO Clients(client_name, email_address, phone_number) values(?,?,?)")
+        var updated = jdbcClient
+                .sql("INSERT INTO Clients(client_name, email_address, phone_number) values(?,?,?)")
                 .params(List.of(client.name(), client.email(), client.phoneNumber())).update();
         Assert.state(updated == 1, "Failed to create client " + client.name());
     }
@@ -46,6 +47,16 @@ public class ClientRepository {
     public Client findById(Integer id) {
         return jdbcClient.sql("SELECT * from Clients WHERE client_id = :id")
                 .param("id", id).query((rows, rowNum) -> new Client(
+                        rows.getInt("client_id"),
+                        rows.getString("client_name"),
+                        rows.getString("email_address"),
+                        rows.getString("phone_number")))
+                .list().get(0);
+    }
+
+    public Client findByPhoneNumber(String phoneNumber) {
+        return jdbcClient.sql("SELECT * from clients WHERE phone_number = :phone_number")
+                .param("phone_number", phoneNumber).query((rows, rowNum) -> new Client(
                         rows.getInt("client_id"),
                         rows.getString("client_name"),
                         rows.getString("email_address"),
