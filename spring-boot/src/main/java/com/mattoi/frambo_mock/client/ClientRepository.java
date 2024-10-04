@@ -34,12 +34,23 @@ public class ClientRepository {
     }
 
     public List<Client> findAll() {
-        return jdbcClient.sql("SELECT * from Clients").query(Client.class).list();
+        return jdbcClient.sql("SELECT * from clients")
+                .query((rows, rowNum) -> new Client(
+                        rows.getInt("client_id"),
+                        rows.getString("client_name"),
+                        rows.getString("email_address"),
+                        rows.getString("phone_number")))
+                .list();
     }
 
     public Client findById(Integer id) {
-        return jdbcClient.sql("SELECT * from Clients WHERE client_id = ")
-                .param("id", id).query(Client.class).single();
+        return jdbcClient.sql("SELECT * from Clients WHERE client_id = :id")
+                .param("id", id).query((rows, rowNum) -> new Client(
+                        rows.getInt("client_id"),
+                        rows.getString("client_name"),
+                        rows.getString("email_address"),
+                        rows.getString("phone_number")))
+                .list().get(0);
     }
 
     public void delete(Integer id) {
