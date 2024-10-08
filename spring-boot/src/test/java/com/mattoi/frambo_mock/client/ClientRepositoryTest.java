@@ -22,7 +22,7 @@ public class ClientRepositoryTest {
     void setup() {
         repository.create(
                 new Client(
-                        0,
+                        null,
                         "Cecilia",
                         "cecilia@email.com",
                         "559811111111"));
@@ -47,7 +47,7 @@ public class ClientRepositoryTest {
         assertEquals(2, clients.size());
     }
 
-    // It's not possible to test findById() with this framework because
+    // It's not possible to test findById() with this test framework because
     // the id of the @BeforeEach clients keeps changing, so I'm using
     // findByPhoneNumber to get the ID first
     @Test
