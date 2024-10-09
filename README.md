@@ -8,9 +8,13 @@ I'm not planning on hosting either app on a server, so they'll have to be run lo
 You'll be able to find the docs for the backend and frontend apps in their respective READMEs.
 
 ### TODO
-- Fill the tables with some data
-- Create repositories (with tests)
-- Create controllers (with tests) (the endpoints are already defined in an external file)
+- Implement order repository
+- Add exception handling to repository layer
+- Implement controller layer
+- Implement controller integration tests
+- Create a service layer and perform unit tests there instead of on the repository layer
+- Create more tests involving invalid inputs
 - Write docs for the endpoints
+- Fill the tables with some data
 - Maybe work on authentication?
-- Maybe work on a front-end, on Vue maybe?
+- Maybe work on a front-end, in Vue maybe?
