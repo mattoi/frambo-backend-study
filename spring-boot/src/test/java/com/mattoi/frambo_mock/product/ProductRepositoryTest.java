@@ -1,5 +1,9 @@
 package com.mattoi.frambo_mock.product;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +21,6 @@ public class ProductRepositoryTest {
     @BeforeEach
     void setup() {
         repository.createCategory(new Category(null, "Cookie"));
-        repository.createCategory(new Category(null, "Cookie recheado"));
-        repository.createCategory(new Category(null, "Recheadinho"));
-        repository.createCategory(new Category(null, "Brigadeiro"));
         repository.create(new Product(null,
                 "Cookie Original",
                 "Cookie à base de manteiga com gotas de chocolate",
@@ -29,88 +30,132 @@ public class ProductRepositoryTest {
                 true,
                 "Cookie"));
 
-        repository.create(new Product(null,
-                "Cookie Come-Come",
-                "Cookie à base de manteiga azulado com gotas de chocolate branco e biscoito Oreo",
-                null,
-                100,
-                (float) 11.00,
-                false,
-                "Cookie"));
-        repository.create(new Product(null,
-                "Cookie Frambô Velvet",
-                "Cookie de massa red velvet com gotas de chocolate branco e recheio de cream cheese",
-                null,
-                100,
-                (float) 12.00,
-                true,
-                "Cookie recheado"));
-        repository.create(new Product(null,
-                "Recheadinho de churros",
-                "Massa açucarada com toque de canela e recheio de doce de leite",
-                null,
-                120,
-                (float) 12.00,
-                false,
-                "Recheadinho"));
     }
 
     @Test
     public void shouldCreateNewProduct() {
-        // cookie pink lemonade, cookie à base de limão siciliano com gotas de Ruby
-        // Chocolate, null, 120g, R$12, true, cookie
-        // TODO
+        var products = repository.findAll();
+        assertEquals(1, products.size());
+
+        repository.create(new Product(
+                null,
+                "Cookie pink lemonade",
+                "Cookie à base de limão siciliano com gotas de Ruby Chocolate",
+                null,
+                120,
+                (float) 12.00,
+                true,
+                "Cookie"));
+
+        products = repository.findAll();
+        assertEquals(2, products.size());
     }
 
     @Test
     public void shouldUpdateProduct() {
-        // TODO
+        var product = repository.findByName("Cookie Original");
+        String newDescription = "Cookie à base de manteiga com gotas de chocolate branco";
+        repository.update(new Product(
+                product.id(),
+                product.name(),
+                newDescription,
+                product.photoUrl(),
+                product.netWeight(),
+                product.price(),
+                product.inStock(),
+                product.category()));
+        var updatedProduct = repository.findByName("Cookie Original");
+
+        assertEquals(newDescription, updatedProduct.description());
+
     }
 
     @Test
     public void shouldUpdateProductAvailability() {
-        // TODO
+        var product = repository.findByName("Cookie Original");
+        assertEquals(true, product.inStock());
+        repository.updateProductAvailability(product.id(), false);
+        var updatedProduct = repository.findByName("Cookie Original");
+        assertEquals(false, updatedProduct.inStock());
     }
 
     @Test
     public void shouldFindAllProducts() {
-        // TODO
+        var products = repository.findAll();
+        assertEquals(1, products.size());
     }
 
     @Test
     public void shouldFindAllProductsInStock() {
-        // TODO
+        repository.create(new Product(
+                null,
+                "Cookie pink lemonade",
+                "Cookie à base de limão siciliano com gotas de Ruby Chocolate",
+                null,
+                120,
+                (float) 12.00,
+                false,
+                "Cookie"));
+        var productsInStock = repository.findAllInStock();
+        assertEquals(1, productsInStock.size());
+    }
+
+    @Test
+    public void shouldFindProductByName() {
+        var product = repository.findByName("Cookie Original");
+
+        assertEquals("Cookie Original", product.name());
     }
 
     @Test
     public void shouldFindProductById() {
-        // TODO
+        var product = repository.findByName("Cookie Original");
+        var productById = repository.findById(product.id());
+        assertEquals(product.id(), productById.id());
     }
 
     @Test
     public void shouldDeleteProduct() {
-        // TODO
+        var product = repository.findByName("Cookie Original");
+        repository.delete(product.id());
+        var products = repository.findAll();
+        assertEquals(0, products.size());
     }
 
     @Test
     public void shouldCreateCategory() {
-        // crinkle
-        // TODO
+        repository.createCategory(new Category(null, "Crinkle"));
+        var categories = repository.findAllCategories();
+        assertEquals(2, categories.size());
     }
 
     @Test
     public void shouldUpdateCategory() {
-        // TODO
+        var categories = repository.findAllCategories();
+        repository.updateCategory(new Category(categories.get(0).id(), "Cookie recheado"));
+        categories = repository.findAllCategories();
+        assertEquals("Cookie recheado", categories.get(0).name());
     }
 
     @Test
     public void shouldFindAllCategories() {
-        // TODO
+        List<Category> categories = repository.findAllCategories();
+        assertEquals(1, categories.size());
+        repository.createCategory(new Category(null, "Cookie recheado"));
+        repository.createCategory(new Category(null, "Recheadinho"));
+        repository.createCategory(new Category(null, "Brigadeiro"));
+        categories = repository.findAllCategories();
+        assertEquals(4, categories.size());
     }
 
     @Test
     public void shouldDeleteCategory() {
-        // TODO
+        var product = repository.findByName("Cookie Original");
+        repository.delete(product.id());
+        var categories = repository.findAllCategories();
+        repository.deleteCategory(categories.get(0).id());
+        categories = repository.findAllCategories();
+        assertEquals(0, categories.size());
     }
 
 }
