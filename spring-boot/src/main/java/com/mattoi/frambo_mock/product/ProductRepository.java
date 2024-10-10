@@ -65,30 +65,30 @@ public class ProductRepository {
         public List<Product> findAll() {
                 return jdbcClient
                                 .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id")
-                                .query((rows, rowNum) -> new Product(
-                                                rows.getInt("product_id"),
-                                                rows.getString("product_name"),
-                                                rows.getString("product_description"),
-                                                rows.getString("photo_url"),
-                                                rows.getInt("net_weight"),
-                                                rows.getFloat("price"),
-                                                rows.getBoolean("in_stock"),
-                                                rows.getString("category_name")))
+                                .query((rs, rowNum) -> new Product(
+                                                rs.getInt("product_id"),
+                                                rs.getString("product_name"),
+                                                rs.getString("product_description"),
+                                                rs.getString("photo_url"),
+                                                rs.getInt("net_weight"),
+                                                rs.getFloat("price"),
+                                                rs.getBoolean("in_stock"),
+                                                rs.getString("category_name")))
                                 .list();
         }
 
         public List<Product> findAllInStock() {
                 return jdbcClient
                                 .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.in_stock = true")
-                                .query((rows, rowNum) -> new Product(
-                                                rows.getInt("product_id"),
-                                                rows.getString("product_name"),
-                                                rows.getString("product_description"),
-                                                rows.getString("photo_url"),
-                                                rows.getInt("net_weight"),
-                                                rows.getFloat("price"),
-                                                rows.getBoolean("in_stock"),
-                                                rows.getString("category_name")))
+                                .query((rs, rowNum) -> new Product(
+                                                rs.getInt("product_id"),
+                                                rs.getString("product_name"),
+                                                rs.getString("product_description"),
+                                                rs.getString("photo_url"),
+                                                rs.getInt("net_weight"),
+                                                rs.getFloat("price"),
+                                                rs.getBoolean("in_stock"),
+                                                rs.getString("category_name")))
                                 .list();
         }
 
@@ -96,15 +96,15 @@ public class ProductRepository {
                 return jdbcClient
                                 .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.product_name = ?")
                                 .param(name)
-                                .query((rows, rowNum) -> new Product(
-                                                rows.getInt("product_id"),
-                                                rows.getString("product_name"),
-                                                rows.getString("product_description"),
-                                                rows.getString("photo_url"),
-                                                rows.getInt("net_weight"),
-                                                rows.getFloat("price"),
-                                                rows.getBoolean("in_stock"),
-                                                rows.getString("category_name")))
+                                .query((rs, rowNum) -> new Product(
+                                                rs.getInt("product_id"),
+                                                rs.getString("product_name"),
+                                                rs.getString("product_description"),
+                                                rs.getString("photo_url"),
+                                                rs.getInt("net_weight"),
+                                                rs.getFloat("price"),
+                                                rs.getBoolean("in_stock"),
+                                                rs.getString("category_name")))
                                 .list().get(0);
         }
 
@@ -112,15 +112,15 @@ public class ProductRepository {
                 return jdbcClient
                                 .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.product_id = ?")
                                 .param(id)
-                                .query((rows, rowNum) -> new Product(
-                                                rows.getInt("product_id"),
-                                                rows.getString("product_name"),
-                                                rows.getString("product_description"),
-                                                rows.getString("photo_url"),
-                                                rows.getInt("net_weight"),
-                                                rows.getFloat("price"),
-                                                rows.getBoolean("in_stock"),
-                                                rows.getString("category_name")))
+                                .query((rs, rowNum) -> new Product(
+                                                rs.getInt("product_id"),
+                                                rs.getString("product_name"),
+                                                rs.getString("product_description"),
+                                                rs.getString("photo_url"),
+                                                rs.getInt("net_weight"),
+                                                rs.getFloat("price"),
+                                                rs.getBoolean("in_stock"),
+                                                rs.getString("category_name")))
                                 .list().get(0);
         }
 
