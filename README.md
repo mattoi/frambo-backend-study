@@ -8,7 +8,6 @@ I'm not planning on hosting either app on a server, so they'll have to be run lo
 You'll be able to find the docs for the backend and frontend apps in their respective READMEs.
 
 ### TODO
-- Implement order repository
 - Add exception handling to repository layer
 - Implement controller layer
 - Implement controller integration tests
