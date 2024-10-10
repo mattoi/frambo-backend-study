@@ -6,16 +6,18 @@ import java.util.List;
 public record Order(
         Integer id,
         Integer clientId,
-        Float totalPrice,
+        Float totalAmount,
         List<OrderItem> items,
-        OrderStatus status,
+        String status,
         LocalDateTime dateCreated,
         LocalDateTime lastUpdated) {
 }
 
-enum OrderStatus {
-    PAYMENT_PENDING,
-    SHIPPED,
-    DELIVERED,
-    CANCELED
-}
+/*
+ * enum OrderStatus {
+ * PAYMENT_PENDING,
+ * SHIPPED,
+ * DELIVERED,
+ * CANCELED
+ * }
+ */
