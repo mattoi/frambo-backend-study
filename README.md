@@ -9,6 +9,7 @@ You'll be able to find the docs for the backend and frontend apps in their respe
 
 ### TODO
 - Add exception handling to repository layer
+- Use the logger
 - Implement controller layer
 - Implement controller integration tests
 - Create a service layer and perform unit tests there instead of on the repository layer
