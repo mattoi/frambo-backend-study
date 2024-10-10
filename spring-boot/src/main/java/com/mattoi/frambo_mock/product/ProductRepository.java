@@ -73,7 +73,7 @@ public class ProductRepository {
                                                 rs.getString("product_description"),
                                                 rs.getString("photo_url"),
                                                 rs.getInt("net_weight"),
-                                                rs.getFloat("price"),
+                                                rs.getDouble("price"),
                                                 rs.getBoolean("in_stock"),
                                                 rs.getString("category_name")))
                                 .list();
@@ -88,7 +88,7 @@ public class ProductRepository {
                                                 rs.getString("product_description"),
                                                 rs.getString("photo_url"),
                                                 rs.getInt("net_weight"),
-                                                rs.getFloat("price"),
+                                                rs.getDouble("price"),
                                                 rs.getBoolean("in_stock"),
                                                 rs.getString("category_name")))
                                 .list();
@@ -104,7 +104,7 @@ public class ProductRepository {
                                                 rs.getString("product_description"),
                                                 rs.getString("photo_url"),
                                                 rs.getInt("net_weight"),
-                                                rs.getFloat("price"),
+                                                rs.getDouble("price"),
                                                 rs.getBoolean("in_stock"),
                                                 rs.getString("category_name")))
                                 .list().get(0);
@@ -120,7 +120,7 @@ public class ProductRepository {
                                                 rs.getString("product_description"),
                                                 rs.getString("photo_url"),
                                                 rs.getInt("net_weight"),
-                                                rs.getFloat("price"),
+                                                rs.getDouble("price"),
                                                 rs.getBoolean("in_stock"),
                                                 rs.getString("category_name")))
                                 .list().get(0);

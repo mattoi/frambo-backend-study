@@ -26,7 +26,7 @@ public class ProductRepositoryTest {
                 "Cookie à base de manteiga com gotas de chocolate",
                 null,
                 120,
-                (float) 14.00,
+                14.00,
                 true,
                 "Cookie"));
 
@@ -43,7 +43,7 @@ public class ProductRepositoryTest {
                 "Cookie à base de limão siciliano com gotas de Ruby Chocolate",
                 null,
                 120,
-                (float) 12.00,
+                12.00,
                 true,
                 "Cookie"));
 
@@ -93,7 +93,7 @@ public class ProductRepositoryTest {
                 "Cookie à base de limão siciliano com gotas de Ruby Chocolate",
                 null,
                 120,
-                (float) 12.00,
+                12.00,
                 false,
                 "Cookie"));
         var productsInStock = repository.findAllInStock();
