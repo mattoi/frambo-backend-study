@@ -6,12 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 @Repository
 public class ClientRepository {
 
-        // TODO modify void methods to return booleans depending on success
         private final JdbcClient jdbcClient;
         private static final Logger log = LoggerFactory.getLogger(ClientRepository.class);
 
@@ -19,20 +17,20 @@ public class ClientRepository {
                 this.jdbcClient = jdbcClient;
         }
 
-        public void create(Client client) {
+        public boolean create(Client client) {
                 var updated = jdbcClient
                                 .sql("INSERT INTO Clients(client_name, email_address, phone_number) values(?,?,?)")
                                 .params(List.of(client.name(), client.email(), client.phoneNumber())).update();
-                Assert.state(updated == 1, "Failed to create client " + client.name());
+                return updated == 1;
         }
 
-        public void update(Client updatedClient) {
+        public boolean update(Client updatedClient) {
                 var updated = jdbcClient.sql(
                                 "UPDATE Clients SET client_id = ?, client_name = ?, email_address = ?, phone_number = ? WHERE client_id = ?")
                                 .params(List.of(updatedClient.id(), updatedClient.name(), updatedClient.email(),
                                                 updatedClient.phoneNumber(), updatedClient.id()))
                                 .update();
-                Assert.state(updated == 1, "Failed to update client " + updatedClient.name());
+                return updated == 1;
         }
 
         public List<Client> findAll() {
@@ -65,10 +63,9 @@ public class ClientRepository {
                                 .list().get(0);
         }
 
-        public void delete(Integer id) {
+        public boolean delete(Integer id) {
                 var updated = jdbcClient.sql("DELETE FROM Clients WHERE client_id = :id")
                                 .param("id", id).update();
-
-                Assert.state(updated == 1, "Failed to delete client");
+                return updated == 1;
         }
 }

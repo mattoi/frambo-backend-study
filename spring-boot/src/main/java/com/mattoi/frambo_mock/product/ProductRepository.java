@@ -7,11 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 @Repository
 public class ProductRepository {
-        // TODO modify void methods to return booleans depending on success
         private final JdbcClient jdbcClient;
         private static final Logger log = LoggerFactory.getLogger(ProductRepository.class);
 
@@ -19,47 +17,51 @@ public class ProductRepository {
                 this.jdbcClient = jdbcClient;
         }
 
-        public void create(Product product) {
+        public boolean create(Product product) {
+                int updated = 0;
                 Integer categoryId = jdbcClient
                                 .sql("SELECT category_id FROM Categories WHERE category_name = :category")
                                 .param("category", product.category()).query(Integer.class).single();
-                Assert.state(categoryId != null, "Failed to find a category ID for this name");
-                var updated = jdbcClient
-                                .sql("INSERT INTO Products(product_name, product_description, photo_url, net_weight, price, in_stock, category_id) VALUES (?,?,?,?,?,?,?)")
-                                .params(Arrays.asList(product.name(), product.description(), product.photoUrl(),
-                                                product.netWeight(),
-                                                product.price(), product.inStock(), categoryId))
-                                .update();
-                Assert.state(updated == 1, "Failed to create product " + product.name());
+                if (categoryId != null) {
+                        updated = jdbcClient
+                                        .sql("INSERT INTO Products(product_name, product_description, photo_url, net_weight, price, in_stock, category_id) VALUES (?,?,?,?,?,?,?)")
+                                        .params(Arrays.asList(product.name(), product.description(), product.photoUrl(),
+                                                        product.netWeight(),
+                                                        product.price(), product.inStock(), categoryId))
+                                        .update();
+                }
+                return updated == 1;
         }
 
-        public void update(Product product) {
+        public boolean update(Product product) {
+                int updated = 0;
                 Integer categoryId = jdbcClient
                                 .sql("SELECT category_id FROM Categories WHERE category_name = :category")
                                 .param("category", product.category()).query(Integer.class).single();
-                Assert.state(categoryId != null, "Failed to find a category ID for this name");
-                var updated = jdbcClient
-                                .sql("UPDATE Products SET product_id = ?, product_name = ?, product_description = ?, photo_url = ?, net_weight = ?, price = ?, in_stock = ?, category_id = ? WHERE product_id = ?")
-                                .params(Arrays.asList(
-                                                product.id(),
-                                                product.name(),
-                                                product.description(),
-                                                product.photoUrl(),
-                                                product.netWeight(),
-                                                product.price(),
-                                                product.inStock(),
-                                                categoryId,
-                                                product.id()))
-                                .update();
-                Assert.state(updated == 1, "Failed to update product " + product.name());
+                if (categoryId != null) {
+                        updated = jdbcClient
+                                        .sql("UPDATE Products SET product_id = ?, product_name = ?, product_description = ?, photo_url = ?, net_weight = ?, price = ?, in_stock = ?, category_id = ? WHERE product_id = ?")
+                                        .params(Arrays.asList(
+                                                        product.id(),
+                                                        product.name(),
+                                                        product.description(),
+                                                        product.photoUrl(),
+                                                        product.netWeight(),
+                                                        product.price(),
+                                                        product.inStock(),
+                                                        categoryId,
+                                                        product.id()))
+                                        .update();
+                }
+                return updated == 1;
         }
 
-        public void updateProductAvailability(Integer productId, boolean inStock) {
+        public boolean updateProductAvailability(Integer productId, boolean inStock) {
                 var updated = jdbcClient
                                 .sql("UPDATE Products SET in_stock = ? WHERE product_id = ?")
                                 .params(Arrays.asList(inStock, productId))
                                 .update();
-                Assert.state(updated == 1, "Failed to update product");
+                return updated == 1;
         }
 
         public List<Product> findAll() {
@@ -124,28 +126,27 @@ public class ProductRepository {
                                 .list().get(0);
         }
 
-        public void delete(Integer id) {
+        public boolean delete(Integer id) {
                 var updated = jdbcClient.sql("DELETE FROM Products WHERE product_id = ?")
                                 .param(id).update();
-
-                Assert.state(updated == 1, "Failed to delete product");
+                return updated == 1;
         }
 
-        public void createCategory(Category category) {
+        public boolean createCategory(Category category) {
                 var updated = jdbcClient
                                 .sql("INSERT INTO Categories(category_name) VALUES (?)")
                                 .param(category.name())
                                 .update();
 
-                Assert.state(updated == 1, "Failed to create product " + category.name());
+                return updated == 1;
         }
 
-        public void updateCategory(Category category) {
+        public boolean updateCategory(Category category) {
                 var updated = jdbcClient
                                 .sql("UPDATE Categories SET category_name = ? WHERE category_id = ?")
                                 .params(category.name(), category.id()).update();
 
-                Assert.state(updated == 1, "Failed to update product " + category.name());
+                return updated == 1;
         }
 
         public List<Category> findAllCategories() {
@@ -157,10 +158,10 @@ public class ProductRepository {
                                 .list();
         }
 
-        public void deleteCategory(Integer id) {
+        public boolean deleteCategory(Integer id) {
                 var updated = jdbcClient.sql("DELETE FROM Categories WHERE category_id = ?")
                                 .param(id).update();
 
-                Assert.state(updated == 1, "Failed to delete category");
+                return updated == 1;
         }
 }
