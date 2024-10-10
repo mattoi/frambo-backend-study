@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.client;
+package com.mattoi.frambo_mock.customer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,22 +12,22 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
 @JdbcTest
-@Import(ClientRepository.class)
+@Import(CustomerRepository.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ClientRepositoryTest {
+public class CustomerRepositoryTest {
     @Autowired
-    private ClientRepository repository;
+    private CustomerRepository repository;
 
     @BeforeEach
     void setup() {
         repository.create(
-                new Client(
+                new Customer(
                         null,
                         "Cecilia",
                         "cecilia@email.com",
                         "559811111111"));
         repository.create(
-                new Client(
+                new Customer(
                         null,
                         "Matheus",
                         "matheus@email.com",
@@ -35,48 +35,48 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void shouldCreateNewClient() {
-        repository.create(new Client(null, "Ayla", "ayla@email.com", "2"));
-        var clients = repository.findAll();
-        assertEquals(3, clients.size());
+    public void shouldCreateNewCustomer() {
+        repository.create(new Customer(null, "Ayla", "ayla@email.com", "2"));
+        var customers = repository.findAll();
+        assertEquals(3, customers.size());
     }
 
     @Test
-    public void shouldFindAllClients() {
-        List<Client> clients = repository.findAll();
-        assertEquals(2, clients.size());
+    public void shouldFindAllCustomers() {
+        List<Customer> customers = repository.findAll();
+        assertEquals(2, customers.size());
     }
 
     // It's not possible to test findById() with this test framework because
-    // the id of the @BeforeEach clients keeps changing, so I'm using
+    // the id of the @BeforeEach customers keeps changing, so I'm using
     // findByPhoneNumber to get the ID first
     @Test
     public void shouldFindByPhoneNumber() {
-        var client = repository.findByPhoneNumber("559811111111");
-        assertEquals("Cecilia", client.name());
+        var customer = repository.findByPhoneNumber("559811111111");
+        assertEquals("Cecilia", customer.name());
     }
 
     @Test
     public void shouldFindById() {
-        var clientFromPhoneNumber = repository.findByPhoneNumber("559811111111");
-        var clientFromId = repository.findById(clientFromPhoneNumber.id());
-        assertEquals(clientFromId, clientFromPhoneNumber);
+        var customerFromPhoneNumber = repository.findByPhoneNumber("559811111111");
+        var customerFromId = repository.findById(customerFromPhoneNumber.id());
+        assertEquals(customerFromId, customerFromPhoneNumber);
     }
 
     @Test
     public void shouldUpdateClient() {
         var client = repository.findByPhoneNumber("559811111111");
-        repository.update(new Client(client.id(), "Matheus Soares", client.email(), client.phoneNumber()));
+        repository.update(new Customer(client.id(), "Matheus Soares", client.email(), client.phoneNumber()));
         var updatedClient = repository.findByPhoneNumber("559811111111");
         assertEquals(updatedClient.name(), "Matheus Soares");
     }
 
     @Test
     public void shouldDeleteClient() {
-        var client = repository.findByPhoneNumber("559811111111");
-        repository.delete(client.id());
-        var clients = repository.findAll();
-        assertEquals(1, clients.size());
+        var customer = repository.findByPhoneNumber("559811111111");
+        repository.delete(customer.id());
+        var customers = repository.findAll();
+        assertEquals(1, customers.size());
     }
     // TODO write tests to ensure invalid data doesn't get added
 }

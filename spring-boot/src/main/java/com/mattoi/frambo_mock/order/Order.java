@@ -5,7 +5,7 @@ import java.util.List;
 
 public record Order(
                 Integer id,
-                Integer clientId,
+                Integer customerId,
                 List<OrderItem> items,
                 String status,
                 LocalDateTime dateCreated,

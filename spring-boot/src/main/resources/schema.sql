@@ -17,12 +17,12 @@ CREATE TABLE IF NOT EXISTS Products (
     FOREIGN KEY (category_id) REFERENCES Categories (category_id)
 );
 
-CREATE TABLE IF NOT EXISTS Clients (
-    client_id SERIAL NOT NULL,
-    client_name VARCHAR(250) NOT NULL,
+CREATE TABLE IF NOT EXISTS Customers (
+    customer_id SERIAL NOT NULL,
+    customer_name VARCHAR(250) NOT NULL,
     email_address VARCHAR(250) UNIQUE,
     phone_number VARCHAR(20) UNIQUE NOT NULL,
-    PRIMARY KEY (client_id)
+    PRIMARY KEY (customer_id)
 );
 
 CREATE TABLE IF NOT EXISTS OrderStatus (
@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS OrderStatus (
 
 CREATE TABLE IF NOT EXISTS Orders (
     order_id SERIAL NOT NULL,
-    client_id INT NOT NULL,
+    customer_id INT NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
     status_name VARCHAR(50) NOT NULL,
     date_created TIMESTAMP NOT NULL,
     last_updated TIMESTAMP NOT NULL,
     PRIMARY KEY (order_id),
-    FOREIGN KEY (client_id) REFERENCES Clients (client_id),
+    FOREIGN KEY (customer_id) REFERENCES Customers (customer_id),
     FOREIGN KEY (status_name) REFERENCES OrderStatus (status_name)
 );
 

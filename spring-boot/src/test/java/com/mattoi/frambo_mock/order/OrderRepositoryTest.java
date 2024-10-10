@@ -13,21 +13,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
-import com.mattoi.frambo_mock.client.Client;
-import com.mattoi.frambo_mock.client.ClientRepository;
+import com.mattoi.frambo_mock.customer.Customer;
+import com.mattoi.frambo_mock.customer.CustomerRepository;
 import com.mattoi.frambo_mock.product.Category;
 import com.mattoi.frambo_mock.product.Product;
 import com.mattoi.frambo_mock.product.ProductRepository;
 
 @JdbcTest
-@Import({ OrderRepository.class, ClientRepository.class, ProductRepository.class })
+@Import({ OrderRepository.class, CustomerRepository.class, ProductRepository.class })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class OrderRepositoryTest {
     @Autowired
     private OrderRepository repository;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private CustomerRepository clientRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -38,7 +38,7 @@ public class OrderRepositoryTest {
     void setup() {
         repository.initializeStatus();
         clientRepository.create(
-                new Client(
+                new Customer(
                         null,
                         "Matheus",
                         "matheus@email.com",

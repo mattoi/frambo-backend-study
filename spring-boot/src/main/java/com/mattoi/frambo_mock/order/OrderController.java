@@ -16,6 +16,6 @@ public class OrderController {
     // TODO put cancelOrder(id)
     // TODO get findAll()
     // TODO get findById(id)
-    // TODO get findAllByClientId(id)
+    // TODO get findAllByCustomerId(id)
     // TODO get findAllByStatus(statusId)
 }

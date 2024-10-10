@@ -33,9 +33,9 @@ public class OrderRepository {
 
     public boolean create(Order order) {
         jdbcClient
-                .sql("INSERT INTO Orders(client_id, total_amount, status_name, date_created, last_updated) values(?,?,?,?,?)")
+                .sql("INSERT INTO Orders(customer_id, total_amount, status_name, date_created, last_updated) values(?,?,?,?,?)")
                 .params(
-                        order.clientId(),
+                        order.customerId(),
                         order.totalAmount(),
                         order.status(),
                         order.dateCreated(),
@@ -62,8 +62,8 @@ public class OrderRepository {
 
     public List<Order> findAll() {
         return jdbcClient.sql(
-                "SELECT o.order_id, c.client_name, o.total_amount, o.status_name, o.date_created, o.last_updated, oi.product_id, p.product_name, p.price, oi.quantity "
-                        + "FROM Orders o INNER JOIN Clients c ON o.client_id = c.client_id "
+                "SELECT o.order_id, c.customer_name, o.total_amount, o.status_name, o.date_created, o.last_updated, oi.product_id, p.product_name, p.price, oi.quantity "
+                        + "FROM Orders o INNER JOIN Customers c ON o.customer_id = c.customer_id "
                         + "INNER JOIN OrderItems oi ON o.order_id = oi.order_id "
                         + "INNER JOIN Products p ON p.product_id = oi.product_id "
                         + "ORDER BY o.order_id")
@@ -75,7 +75,7 @@ public class OrderRepository {
                         if (order == null) {
                             order = new Order(
                                     rs.getInt("order_id"),
-                                    rs.getInt("client_id"),
+                                    rs.getInt("customer_id"),
                                     new ArrayList<>(),
                                     rs.getString("status_name"),
                                     rs.getTimestamp("date_created").toLocalDateTime(),
@@ -95,8 +95,8 @@ public class OrderRepository {
 
     public Order findById(Integer id) {
         return jdbcClient.sql(
-                "SELECT o.order_id, c.client_name, o.total_amount, o.status_name, o.date_created, o_last_updated, oi.product_id, p.product_name, oi.quantity "
-                        + "FROM Orders o INNER JOIN Clients c ON o.client_id = c.client_id "
+                "SELECT o.order_id, c.customer_name, o.total_amount, o.status_name, o.date_created, o_last_updated, oi.product_id, p.product_name, oi.quantity "
+                        + "FROM Orders o INNER JOIN Customers c ON o.customer_id = c.customer_id "
                         + "INNER JOIN OrderItems oi WHERE o.order_id = oi.order_id "
                         + "INNER JOIN Products p WHERE p.product_id = oi.product_id "
                         + "WHERE o.order_id = ?")
@@ -109,7 +109,7 @@ public class OrderRepository {
                         if (order == null) {
                             order = new Order(
                                     rs.getInt("order_id"),
-                                    rs.getInt("client_id"),
+                                    rs.getInt("customer_id"),
                                     orderItems,
                                     rs.getString("status_name"),
                                     rs.getTimestamp("date_created").toLocalDateTime(),
@@ -130,11 +130,11 @@ public class OrderRepository {
 
     public List<Order> findAllByClientId(Integer id) {
         return jdbcClient.sql(
-                "SELECT o.order_id, c.client_name, o.total_amount, o.status_name, o.date_created, o_last_updated, oi.product_id, p.product_name, oi.quantity "
-                        + "FROM Orders o INNER JOIN Clients c ON o.client_id = c.client_id "
+                "SELECT o.order_id, c.customer_name, o.total_amount, o.status_name, o.date_created, o_last_updated, oi.product_id, p.product_name, oi.quantity "
+                        + "FROM Orders o INNER JOIN Customers c ON o.customer_id = c.customer_id "
                         + "INNER JOIN OrderItems oi WHERE o.order_id = oi.order_id "
                         + "INNER JOIN Products p WHERE p.product_id = oi.product_id "
-                        + "WHERE o.client_id = ?"
+                        + "WHERE o.customer_id = ?"
                         + "ORDER BY o.order_id")
                 .param(id)
                 .query((rs, rowNum) -> {
@@ -145,7 +145,7 @@ public class OrderRepository {
                         if (order == null) {
                             order = new Order(
                                     rs.getInt("order_id"),
-                                    rs.getInt("client_id"),
+                                    rs.getInt("customer_id"),
                                     new ArrayList<>(),
                                     rs.getString("status_name"),
                                     rs.getTimestamp("date_created").toLocalDateTime(),
@@ -165,8 +165,8 @@ public class OrderRepository {
 
     public List<Order> findAllByStatus(String status) {
         return jdbcClient.sql(
-                "SELECT o.order_id, c.client_name, o.total_amount, o.status_name, o.date_created, o_last_updated, oi.product_id, p.product_name, oi.quantity "
-                        + "FROM Orders o INNER JOIN Clients c ON o.client_id = c.client_id "
+                "SELECT o.order_id, c.customer_name, o.total_amount, o.status_name, o.date_created, o_last_updated, oi.product_id, p.product_name, oi.quantity "
+                        + "FROM Orders o INNER JOIN Customers c ON o.customer_id = c.customer_id "
                         + "INNER JOIN OrderItems oi WHERE o.order_id = oi.order_id "
                         + "INNER JOIN Products p WHERE p.product_id = oi.product_id "
                         + "WHERE o.status_name = ?"
@@ -180,7 +180,7 @@ public class OrderRepository {
                         if (order == null) {
                             order = new Order(
                                     rs.getInt("order_id"),
-                                    rs.getInt("client_id"),
+                                    rs.getInt("customer_id"),
                                     new ArrayList<>(),
                                     rs.getString("status_name"),
                                     rs.getTimestamp("date_created").toLocalDateTime(),
