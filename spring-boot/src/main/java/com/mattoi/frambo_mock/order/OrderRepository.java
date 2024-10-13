@@ -52,7 +52,7 @@ public class OrderRepository {
                                         .sql("INSERT INTO OrderItems(order_id, product_id, quantity) values(?,?,?)")
                                         .params(newOrderId, item.productId(), item.quantity()).update();
                 }
-                return updated == order.items().size();
+                return updated > 0 && updated == order.items().size();
         }
 
         public boolean updateOrderStatus(Integer id, String newStatus) {

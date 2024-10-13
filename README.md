@@ -8,14 +8,13 @@ I'm not planning on hosting either app on a server, so they'll have to be run lo
 You'll be able to find the docs for the backend and frontend apps in their respective READMEs.
 
 ### TODO
-- Add exception handling to repository layer
 - Use the logger
 - Implement controller layer
 - Implement controller integration tests
 - Create a service layer and perform unit tests there instead of on the repository layer
+- Add exception handling to service layer
 - Create more tests involving invalid inputs
 - Write docs for the endpoints
 - Fill the tables with some data
-- Add checks to the database schema
 - Maybe work on authentication?
 - Maybe work on a front-end, in Vue maybe?

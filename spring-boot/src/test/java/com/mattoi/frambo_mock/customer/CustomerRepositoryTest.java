@@ -36,7 +36,7 @@ public class CustomerRepositoryTest {
 
     @Test
     public void shouldCreateNewCustomer() {
-        repository.create(new Customer(null, "Ayla", "ayla@email.com", "2"));
+        repository.create(new Customer(null, "Ayla", "ayla@email.com", "559833333333"));
         var customers = repository.findAll();
         assertEquals(3, customers.size());
     }
