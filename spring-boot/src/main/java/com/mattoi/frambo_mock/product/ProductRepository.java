@@ -25,9 +25,14 @@ public class ProductRepository {
                 if (categoryId != null) {
                         updated = jdbcClient
                                         .sql("INSERT INTO Products(product_name, product_description, photo_url, net_weight, price, in_stock, category_id) VALUES (?,?,?,?,?,?,?)")
-                                        .params(Arrays.asList(product.name(), product.description(), product.photoUrl(),
+                                        .params(
+                                                        product.name(),
+                                                        product.description(),
+                                                        product.photoUrl(),
                                                         product.netWeight(),
-                                                        product.price(), product.inStock(), categoryId))
+                                                        product.price(),
+                                                        product.inStock(),
+                                                        categoryId)
                                         .update();
                 }
                 return updated == 1;
@@ -41,7 +46,7 @@ public class ProductRepository {
                 if (categoryId != null) {
                         updated = jdbcClient
                                         .sql("UPDATE Products SET product_id = ?, product_name = ?, product_description = ?, photo_url = ?, net_weight = ?, price = ?, in_stock = ?, category_id = ? WHERE product_id = ?")
-                                        .params(Arrays.asList(
+                                        .params(
                                                         product.id(),
                                                         product.name(),
                                                         product.description(),
@@ -50,7 +55,7 @@ public class ProductRepository {
                                                         product.price(),
                                                         product.inStock(),
                                                         categoryId,
-                                                        product.id()))
+                                                        product.id())
                                         .update();
                 }
                 return updated == 1;
@@ -59,7 +64,7 @@ public class ProductRepository {
         public boolean updateProductAvailability(Integer productId, boolean inStock) {
                 var updated = jdbcClient
                                 .sql("UPDATE Products SET in_stock = ? WHERE product_id = ?")
-                                .params(Arrays.asList(inStock, productId))
+                                .params(inStock, productId)
                                 .update();
                 return updated == 1;
         }

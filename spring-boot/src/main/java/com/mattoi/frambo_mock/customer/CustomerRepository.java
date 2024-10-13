@@ -20,15 +20,15 @@ public class CustomerRepository {
         public boolean create(Customer customer) {
                 var updated = jdbcClient
                                 .sql("INSERT INTO Customers(customer_name, email_address, phone_number) values(?,?,?)")
-                                .params(List.of(customer.name(), customer.email(), customer.phoneNumber())).update();
+                                .params(customer.name(), customer.email(), customer.phoneNumber()).update();
                 return updated == 1;
         }
 
         public boolean update(Customer updatedClient) {
                 var updated = jdbcClient.sql(
                                 "UPDATE Customers SET customer_id = ?, customer_name = ?, email_address = ?, phone_number = ? WHERE customer_id = ?")
-                                .params(List.of(updatedClient.id(), updatedClient.name(), updatedClient.email(),
-                                                updatedClient.phoneNumber(), updatedClient.id()))
+                                .params(updatedClient.id(), updatedClient.name(), updatedClient.email(),
+                                                updatedClient.phoneNumber(), updatedClient.id())
                                 .update();
                 return updated == 1;
         }
