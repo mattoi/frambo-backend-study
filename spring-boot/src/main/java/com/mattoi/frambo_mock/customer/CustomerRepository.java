@@ -34,7 +34,7 @@ public class CustomerRepository {
         }
 
         public List<Customer> findAll() {
-                return jdbcClient.sql("SELECT * from Customers")
+                return jdbcClient.sql("SELECT * from Customers ORDER BY customer_id")
                                 .query((rows, rowNum) -> new Customer(
                                                 rows.getInt("customer_id"),
                                                 rows.getString("customer_name"),

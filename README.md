@@ -12,9 +12,10 @@ You'll be able to find the docs for the backend and frontend apps in their respe
 - Implement controller layer
 - Implement controller integration tests
 - Create a service layer and perform unit tests there instead of on the repository layer
-- Add exception handling to service layer
+- Add exception handling 
+- Add appropriate response codes and messages to the controller layer
 - Create more tests involving invalid inputs
 - Write docs for the endpoints
-- Fill the tables with some data
+- Provide a postman import file for API testing
 - Maybe work on authentication?
 - Maybe work on a front-end, in Vue maybe?
