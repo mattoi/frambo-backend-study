@@ -70,7 +70,7 @@ public class OrderRepository {
                                                 + "ORDER BY o.order_id")
                                 .query((rs, rowNum) -> {
                                         Map<Integer, Order> orderMap = new HashMap<>();
-                                        while (rs.next()) {
+                                        do {
                                                 int orderId = rs.getInt("order_id");
                                                 Order order = orderMap.get(orderId);
                                                 if (order == null) {
@@ -91,7 +91,7 @@ public class OrderRepository {
                                                                 rs.getDouble("price"),
                                                                 rs.getInt("quantity"));
                                                 order.items().add(item);
-                                        }
+                                        } while (rs.next());
                                         return new ArrayList<>(orderMap.values());
                                 }).single();
         }
@@ -108,7 +108,7 @@ public class OrderRepository {
                                         Order order = null;
                                         List<OrderItem> orderItems = new ArrayList<>();
 
-                                        while (rs.next()) {
+                                        do {
                                                 if (order == null) {
                                                         order = new Order(
                                                                         rs.getInt("order_id"),
@@ -127,13 +127,13 @@ public class OrderRepository {
                                                                 rs.getInt("quantity"));
 
                                                 orderItems.add(item);
-                                        }
+                                        } while (rs.next());
 
                                         return order;
                                 }).single();
         }
 
-        public List<Order> findAllByClientId(Integer id) {
+        public List<Order> findAllByCustomerId(Integer id) {
                 return jdbcClient.sql(
                                 "SELECT o.order_id, c.customer_name, o.customer_id, o.total_amount, o.status_name, o.date_created, o.last_updated, oi.product_id, p.product_name, p.price, oi.quantity "
                                                 + "FROM Orders o INNER JOIN Customers c ON o.customer_id = c.customer_id "
@@ -144,7 +144,7 @@ public class OrderRepository {
                                 .param(id)
                                 .query((rs, rowNum) -> {
                                         Map<Integer, Order> orderMap = new HashMap<>();
-                                        while (rs.next()) {
+                                        do {
                                                 int orderId = rs.getInt("order_id");
                                                 Order order = orderMap.get(orderId);
                                                 if (order == null) {
@@ -165,7 +165,7 @@ public class OrderRepository {
                                                                 rs.getDouble("price"),
                                                                 rs.getInt("quantity"));
                                                 order.items().add(item);
-                                        }
+                                        } while (rs.next());
                                         return new ArrayList<>(orderMap.values());
                                 }).single();
         }
@@ -181,7 +181,7 @@ public class OrderRepository {
                                 .param(status)
                                 .query((rs, rowNum) -> {
                                         Map<Integer, Order> orderMap = new HashMap<>();
-                                        while (rs.next()) {
+                                        do {
                                                 int orderId = rs.getInt("order_id");
                                                 Order order = orderMap.get(orderId);
                                                 if (order == null) {
@@ -202,7 +202,7 @@ public class OrderRepository {
                                                                 rs.getDouble("price"),
                                                                 rs.getInt("quantity"));
                                                 order.items().add(item);
-                                        }
+                                        } while (rs.next());
                                         return new ArrayList<>(orderMap.values());
                                 }).single();
         }
