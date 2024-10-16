@@ -4,6 +4,8 @@ This is the main application for this study project: a Spring Boot web app for a
 This app provides a database integration and endpoints to access it. The database is set to be containerized for easy setup.
 You can perform various CRUD operations to manipulate customer, product and order data. I implemented the operations I thought would be useful in a real-life scenario.
 
+Right now the application works roughly as intended, accepting valid request bodies and rejecting invalid entries (thanks to the database schema), but it's not doing a good job on communicating what's wrong with each invalid request. The response codes are all over the place and there's no exception handling to help address that, either. My next steps after writing the initial documentation are implementing exceptions and response entities.
+
 ## How To Run This Application
 
 Requirements:
