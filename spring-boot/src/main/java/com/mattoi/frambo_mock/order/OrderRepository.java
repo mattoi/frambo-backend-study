@@ -37,9 +37,9 @@ public class OrderRepository {
                                 .params(
                                                 order.customerId(),
                                                 order.totalAmount(),
-                                                order.status(),
-                                                order.dateCreated(),
-                                                order.lastUpdated())
+                                                "PAYMENT_PENDING",
+                                                LocalDateTime.now(),
+                                                LocalDateTime.now())
                                 .update();
                 var orders = jdbcClient.sql(
                                 "SELECT o.order_id FROM Orders o "
