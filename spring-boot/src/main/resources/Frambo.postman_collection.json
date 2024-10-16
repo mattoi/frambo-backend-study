@@ -1,0 +1,631 @@
+{
+	"info": {
+		"_postman_id": "d5cfc9aa-e86f-4115-945b-256a4ab3742d",
+		"name": "Frambô",
+		"description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple Javascript code. You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\".\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" alt=\"\" height=\"103\" width=\"266\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## ℹ️ Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20835413"
+	},
+	"item": [
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "New customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"An access token is returned\", () => {",
+									"    pm.expect(pm.response.json()).to.have.property('token')",
+									"    pm.expect(pm.response.json().token).to.be.a('string')",
+									"    // Set the collection-scope \"token\" variable to the token received from the API",
+									"    // This lets us use it in other requests",
+									"    pm.collectionVariables.set('token', pm.response.json().token)",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "null",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Ezequiel",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "ezequiel@email.com",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "559844444444",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers"
+							]
+						},
+						"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+					},
+					"response": []
+				},
+				{
+					"name": "Update customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"An access token is returned\", () => {",
+									"    pm.expect(pm.response.json()).to.have.property('token')",
+									"    pm.expect(pm.response.json().token).to.be.a('string')",
+									"    // Set the collection-scope \"token\" variable to the token received from the API",
+									"    // This lets us use it in other requests",
+									"    pm.collectionVariables.set('token', pm.response.json().token)",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Cecilia",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "cecilia@email.com",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "559822225555",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers"
+							]
+						},
+						"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+					},
+					"response": []
+				},
+				{
+					"name": "All customers",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Find customer by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/customers?id=3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/customers?id=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products/Categories",
+			"item": [
+				{
+					"name": "New product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Test Cookie Kitkat",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Cookie à base de manteiga com gotas de chocolate e pedaços de Kitkat",
+									"type": "text"
+								},
+								{
+									"key": "photoUrl",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "netWeight",
+									"value": "120",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "14.00",
+									"type": "text"
+								},
+								{
+									"key": "inStock",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Cookie",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Cookie de Churros",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Cookie à base de manteiga com toques de canela e recheio de doce de leite",
+									"type": "text"
+								},
+								{
+									"key": "photoUrl",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "netWeight",
+									"value": "120",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "14.00",
+									"type": "text"
+								},
+								{
+									"key": "inStock",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Cookie recheado",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All products in stock",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/in_stock",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"in_stock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?id=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Crinkle",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/categories?id=2&name=Cookie com recheio",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								},
+								{
+									"key": "name",
+									"value": "Cookie com recheio"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "New order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"customerId\": 3,\r\n  \"totalAmount\": 28.00,\r\n  \"items\": [\r\n    {\r\n      \"productId\": 94,\r\n      \"productName\": \"Cookie original\",\r\n      \"productPrice\": 14.00,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"SHIPPED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders?id=3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?id=44",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "44"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All orders by customer ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?customer_id=35",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "customer_id",
+									"value": "35"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All orders by status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?status=PAYMENT_PENDING",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PAYMENT_PENDING"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://postman-integration-testing.glitch.me/"
+		}
+	]
+}
