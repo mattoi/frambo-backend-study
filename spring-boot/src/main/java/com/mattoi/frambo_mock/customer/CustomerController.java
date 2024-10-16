@@ -41,6 +41,7 @@ public class CustomerController {
         return repository.findById(id);
     }
 
+    // TODO consider avoid deleting customers
     @DeleteMapping(value = { "" }, params = { "id" })
     void delete(@RequestParam(name = "id") Integer id) {
         repository.delete(id);
