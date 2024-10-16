@@ -48,6 +48,8 @@ public class ProductController {
         return repository.findById(id);
     }
 
+    // TODO consider not allowing deletion and encouraging removing from stock,
+    // since this would mess up the order items table
     @DeleteMapping(value = { "" }, params = { "id" })
     void delete(@RequestParam(name = "id") Integer id) {
         repository.delete(id);
@@ -68,6 +70,7 @@ public class ProductController {
         return repository.findAllCategories();
     }
 
+    // TODO same as above
     @DeleteMapping(value = { "/categories" }, params = { "id" })
     void deleteCategory(@RequestParam(name = "id") Integer id) {
         repository.deleteCategory(id);
