@@ -70,7 +70,7 @@ public class ProductRepository {
 
         public List<Product> findAll() {
                 return jdbcClient
-                                .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id")
+                                .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id ORDER BY Products.product_id")
                                 .query((rs, rowNum) -> new Product(
                                                 rs.getInt("product_id"),
                                                 rs.getString("product_name"),
@@ -85,7 +85,7 @@ public class ProductRepository {
 
         public List<Product> findAllInStock() {
                 return jdbcClient
-                                .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.in_stock = true")
+                                .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.in_stock = true ORDER BY Products.product_id")
                                 .query((rs, rowNum) -> new Product(
                                                 rs.getInt("product_id"),
                                                 rs.getString("product_name"),
@@ -100,7 +100,7 @@ public class ProductRepository {
 
         public Product findByName(String name) {
                 return jdbcClient
-                                .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.product_name = ?")
+                                .sql("SELECT * FROM Products INNER JOIN Categories ON Products.category_id = Categories.category_id WHERE Products.product_name = ? ORDER BY Products.product_id")
                                 .param(name)
                                 .query((rs, rowNum) -> new Product(
                                                 rs.getInt("product_id"),
@@ -155,7 +155,7 @@ public class ProductRepository {
 
         public List<Category> findAllCategories() {
                 return jdbcClient
-                                .sql("SELECT * FROM Categories")
+                                .sql("SELECT * FROM Categories ORDER BY category_id")
                                 .query((rows, rowNum) -> new Category(
                                                 rows.getInt("category_id"),
                                                 rows.getString("category_name")))
