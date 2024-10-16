@@ -27,7 +27,7 @@ public class OrderController {
     }
 
     @PutMapping(value = { "" }, params = { "id" })
-    void cancelOrder(@RequestParam(name = "id") Integer id, @RequestBody HashMap<String, String> status) {
+    void updateOrderStatus(@RequestParam(name = "id") Integer id, @RequestBody HashMap<String, String> status) {
         repository.updateOrderStatus(id, status.get("status"));
     }
 
