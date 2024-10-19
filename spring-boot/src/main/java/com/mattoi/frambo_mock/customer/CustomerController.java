@@ -24,27 +24,38 @@ public class CustomerController {
     @PostMapping("")
     void create(@ModelAttribute Customer newCustomer) {
         repository.create(newCustomer);
+        // return 201 on success
+        // return 400 on missing fields
+        // return 422 on invalid fields
     }
 
     @PatchMapping(value = { "" }, params = { "id" })
     void update(@RequestParam(name = "id") Integer id, @ModelAttribute Customer updatedCustomer) {
         repository.update(updatedCustomer);
+        // return 204 on success
+        // return 404 on id not found
+        // return 422 on invalid fields
     }
 
     @GetMapping("")
     List<Customer> findAll() {
         return repository.findAll();
+        // return 200 on success
     }
 
     @GetMapping(value = { "" }, params = { "id" })
     Customer findById(@RequestParam(name = "id") Integer id) {
         return repository.findById(id);
+        // return 200 on success
+        // return 404 on id not found
     }
 
-    // TODO consider avoid deleting customers
-    @DeleteMapping(value = { "" }, params = { "id" })
-    void delete(@RequestParam(name = "id") Integer id) {
-        repository.delete(id);
-    }
+    // consider avoid deleting customers
+    /*
+     * @DeleteMapping(value = { "" }, params = { "id" })
+     * void delete(@RequestParam(name = "id") Integer id) {
+     * repository.delete(id);
+     * }
+     */
 
 }
