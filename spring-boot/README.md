@@ -63,7 +63,7 @@ Adds a new customer to the database. The ID is generated automatically.
 500 Internal Server Error
 ```
 
-#### [PUT] Update customer
+#### [PATCH] Update customer
 `/api/customers`
 
 Updates a costumer's name or contact fields. The provided `id` specifies the customer that will be modified. All the fields need to be present in the request body at the same time, even if some of them are unchanged. 
@@ -175,7 +175,7 @@ Adds a new product to the database. The ID is generated automatically. The `cate
 ```
 500 Internal Server Error
 ```
-#### [PUT] Update product
+#### [PATCH] Update product
 `/api/products`
 
 Updates a product's fields. The provided `id` specifies the poduct that will be modified. All the fields need to be present in the request body at the same time, even if some of them are unchanged. 
@@ -298,7 +298,7 @@ Adds a new category to the database. The ID is generated automatically.
 500 Internal Server Error
 ```
 
-#### [PUT] Update category
+#### [PATCH] Update category
 `/api/products/categories`
 
 Updates a category's name. The provided `id` specifies the category that will be modified.
@@ -388,7 +388,7 @@ Adds a new order to the database. The ID is generated automatically. The `custom
 500 Internal Server Error
 ```
 
-#### [PUT] Update order status
+#### [PATCH] Update order status
 `/api/orders?id={id}`
 
 Updates an order's status. 
