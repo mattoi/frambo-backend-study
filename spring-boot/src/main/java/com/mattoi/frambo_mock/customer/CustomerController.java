@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -26,8 +26,8 @@ public class CustomerController {
         repository.create(newCustomer);
     }
 
-    @PutMapping("")
-    void update(@ModelAttribute Customer updatedCustomer) {
+    @PatchMapping(value = { "" }, params = { "id" })
+    void update(@RequestParam(name = "id") Integer id, @ModelAttribute Customer updatedCustomer) {
         repository.update(updatedCustomer);
     }
 

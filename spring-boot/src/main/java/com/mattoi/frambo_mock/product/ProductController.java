@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +25,8 @@ public class ProductController {
         repository.create(product);
     }
 
-    @PutMapping("")
-    void update(@ModelAttribute Product product) {
+    @PatchMapping(value = { "" }, params = { "id" })
+    void update(@RequestParam("id") Integer id, @ModelAttribute Product product) {
         repository.update(product);
     }
 
@@ -60,8 +60,8 @@ public class ProductController {
         repository.createCategory(category);
     }
 
-    @PutMapping("/categories")
-    void updateCategory(Category category) {
+    @PatchMapping(value = { "/categories" }, params = { "id" })
+    void updateCategory(@RequestParam("id") Integer id, Category category) {
         repository.updateCategory(category);
     }
 
@@ -72,7 +72,7 @@ public class ProductController {
 
     // TODO same as above
     @DeleteMapping(value = { "/categories" }, params = { "id" })
-    void deleteCategory(@RequestParam(name = "id") Integer id) {
+    void deleteCategory(@RequestParam("id") Integer id) {
         repository.deleteCategory(id);
     }
 }
