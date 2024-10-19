@@ -73,8 +73,8 @@ Updates a costumer's name or contact fields. The provided `id` specifies the cus
 {
     id* (int)
     name (String(250))
-    email (String(250))
-    phoneNumber (String(20))
+    email* (String(250))
+    phoneNumber* (String(20))
 }
 ```
 ##### Responses
@@ -90,8 +90,6 @@ Updates a costumer's name or contact fields. The provided `id` specifies the cus
 `/api/customers`
 
 Returns a list with all registered customers.
-
-##### Request body format
 
 ##### Responses
 ```
