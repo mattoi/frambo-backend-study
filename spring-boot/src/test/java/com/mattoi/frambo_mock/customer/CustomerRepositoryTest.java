@@ -78,5 +78,4 @@ public class CustomerRepositoryTest {
         var customers = repository.findAll();
         assertEquals(1, customers.size());
     }
-    // TODO write tests to ensure invalid data doesn't get added
 }
