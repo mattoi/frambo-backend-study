@@ -1,8 +1,8 @@
-# Frambô Confeitaria Mock Backend
+# Frambô Confeitaria Backend Study
 
 This is the main application for this study project: a Spring Boot web app for a cookie store e-commerce system. It's the follow-up to [this project](https://github.com/mattoi/fcc-spring-boot-tutorial) where I coded along a FreeCodeCamp tutorial. This app provides a database integration and endpoints to access it. The database is set to be containerized for easy setup. You can perform various CRUD operations to manipulate customer, product and order data. I implemented the operations I thought would be useful in a real-life scenario.
 
-Right now the application works roughly as intended, accepting valid request bodies and rejecting invalid entries (thanks to the database schema), but it's not doing a good job on communicating what's wrong with each invalid request. The response codes are all over the place and there's no exception handling to communicate that throughout the app, either. My next steps after writing the initial documentation are implementing exceptions and response entities.
+Right now the application works roughly as intended, accepting valid request bodies and rejecting invalid entries (thanks to the database schema), (TODO) but it's not doing a good job on communicating what's wrong with each invalid request. The response codes are all over the place and there's no exception handling to communicate that throughout the app, either. My next steps after writing the initial documentation are implementing exceptions and response entities.
 
 ## How To Run This Application
 
@@ -22,13 +22,18 @@ The database schema is set to be executed on startup. After launching the app, y
 
 ## API Documentation
 
-Here you can find descriptions for each type of JSON object representing an entity in the application and the endpoints for their manipulation. Fields with a * can't be null, but not all of them are required in a request body. I did implement some Delete methods, but realized that the relational structure will rarely allow any deletions, so I omitted them.
+Here you can find descriptions for each type of JSON object representing an entity in the application and the endpoints for their manipulation. Fields with a * can't be null, but depending on the HTTP method, some of them can be omitted. I did implement some Delete methods, but realized that the relational structure will rarely allow any deletions, so I chose to disable them.
 
 ##### TODO
+- Fix the database schema and initial data startup. 
+- Implement the service layer and perform unit tests there instead of in the repository layer.
+- Implement unit tests involving invalid inputs.
+- Implement integration tests.
+- Use the logger where applicable.
 - Provide the appropriate response codes and bodies (when necessary) for better clarity. Right now, pretty much every successful call returns a 200 and every unsuccessful call returns a 500.
 - Update response bodies in this section after the implementation.
-- Consider changing Put requests to Patch, as they're not supposed to replace *all* of an object's fields (i.e the ID should always stay the same).
 - Consider using id as a path parameter for update methods instead of being included in the request body.
+- Implement authentication.
 
 ### Customer
 
@@ -518,13 +523,25 @@ Returns a list of all orders marked with the provided status name.
 ```
 
 ## Project structure
+This project is structured in a package-by-feature manner. This means that each entity and all of the classes directly involving it are in the same folder. This made more sense to me, as imports are naturally handed in each package. Details on each layer of the application are descibed below.
 
 ### Database
+The application uses a PostgreSQL database that's containerized using Spring Boot's Docker integration. The [schema](spring-boot\src\main\resources\schema.sql) and some [initial data](spring-boot\src\main\resources\initial_data.sql) for easy testing of the HTTP calls are provided in the resources folder. I tried to add as many constraints as I thought would be in line with a cookie store's business logic, such as not allowing zero-item orders or multiple products with the same name or description. These rules are also checked in the Service layer when possible, to prevent unnecessary database calls. 
+
+The following is a diagram representation of the database's schema.
+
+![A picture containing a diagram representation of the database's schema](schema.png "Schema Diagram")
 
 ### Model Layer
+Each entity is mostly a 1-to-1 representation of its database, except for the order items, which compose a list inside the pertaining order. I chose to use records for the classes, as there shouldn't be any attribute editing involved anywhere in the application's workflow. 
+
+I am considering, however, using Null checking and consequently implementing a "Request" class for each model, as the nullable fields would need to be different between them. If I was using a more modern language I would probably have to do that, but since Java has such an "opt-in" implementation of null checking, I guess the current method works for now.
 
 ### Repository Layer
+The repository classes use `jdbcClient` to interact with the database by using direct SQL queries and operations. I found out about JPA while implementing this layer, and I see how it can be useful for faster prototyping and less error-prone queries, but I wanted to practice my SQL so I went with JDBC instead. Also, apparently JPA can run about 4x slower than JDBC? I didn't test it, but writing pure SQL didn't hurt. 
 
 ### Service Layer
+(TODO) This has not been implemented yet. The service layer is meant to validade requests coming in from the controllers to make sure the request bodies are in line with the business logic. In case of an invalid request, the classes in this layer will attempt to point out all the errors that need fixing in order to turn it into a valid one.
 
 ### Controller Layer
+This layer uses `@RestController` to offer HTTP endpoints for the various database operations implemented in the project. By default, `@ModelAttribute` uses Jackson to automatically convert the data classes into JSON and vice-versa, but in some methods it was preferrable to use `@RequestBody` with a `Map` to get more specific results. (TODO) I'm making an effort to make sure each method returns an appropriate response code for each type of input, and show the errors found in the Service layer when applicable.
