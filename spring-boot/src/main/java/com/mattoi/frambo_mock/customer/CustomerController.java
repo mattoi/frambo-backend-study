@@ -4,8 +4,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.mattoi.frambo_mock.exception.EntityNotFoundException;
+import com.mattoi.frambo_mock.exception.InvalidRequestException;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,39 +17,44 @@ import org.springframework.web.bind.annotation.PatchMapping;
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
-    private CustomerRepository repository;
+    private CustomerService service;
 
-    public CustomerController(CustomerRepository repository) {
-        this.repository = repository;
+    public CustomerController(CustomerService service) {
+        this.service = service;
     }
 
     @PostMapping("")
-    void create(@ModelAttribute Customer newCustomer) {
-        repository.create(newCustomer);
-        // return 201 on success
-        // return 400 on missing fields
-        // return 422 on invalid fields
+    ResponseEntity<?> create(@ModelAttribute Customer newCustomer) {
+        try {
+           return new ResponseEntity<>(service.create(newCustomer), HttpStatus.CREATED);
+        } catch (InvalidRequestException e) {
+           return new ResponseEntity<>(e.getErrors(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } 
     }
 
     @PatchMapping(value = { "" }, params = { "id" })
-    void update(@RequestParam(name = "id") Integer id, @ModelAttribute Customer updatedCustomer) {
-        repository.update(updatedCustomer);
-        // return 204 on success
-        // return 404 on id not found
-        // return 422 on invalid fields
+    ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @ModelAttribute Customer updatedCustomer) {
+        try{
+            return new ResponseEntity<>(service.update(id, updatedCustomer), HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidRequestException e){
+            return new ResponseEntity<>(e.getErrors(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @GetMapping("")
-    List<Customer> findAll() {
-        return repository.findAll();
-        // return 200 on success
+    ResponseEntity<?> findAll() {
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = { "" }, params = { "id" })
-    Customer findById(@RequestParam(name = "id") Integer id) {
-        return repository.findById(id);
-        // return 200 on success
-        // return 404 on id not found
+    ResponseEntity<?> findById(@RequestParam(name = "id") Integer id) {
+        try{
+            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+        } catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } 
     }
 
     // consider avoid deleting customers
