@@ -68,7 +68,12 @@ Adds a new customer to the database. The ID is generated automatically.
 ```
 
 ```
-500 Internal Server Error
+422 Unprocessable Entity
+
+[
+    "Name cannot be empty",
+    "Phone number needs to have at least 7 characters"
+]
 ```
 
 #### [PATCH] Update customer
@@ -90,9 +95,19 @@ Updates a costumer's name or contact fields. The provided `id` specifies the cus
 200 OK
 ```
 
-##### TODO 
-- Modify repository method so not every single field is required in the response body
-- Entering a non-existing id will result in a 200 but nothing will happen
+```
+404 Not Found
+
+"Couldn't find a customer with ID 44"
+```
+
+```
+422 Unprocessable Entity
+
+[
+    "New phone number needs to have at least 7 characters"
+]
+```
 
 #### [GET] All customers
 `/api/customers`
@@ -131,11 +146,10 @@ Returns the customer associated with the `id` parameter.
 ```
 
 ```
-500 Internal Server Error
-```
+404 Not Found
 
-##### TODO
-- Return a 404 instead of 500
+"Couldn't find a customer with ID 44"
+```
 
 ### Product
 
