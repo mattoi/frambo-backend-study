@@ -16,14 +16,15 @@ public class ProductRepository {
                 this.jdbcClient = jdbcClient;
         }
 
-        public boolean create(Product product) {
+        public Integer create(Product product) {
                 int updated = 0;
                 Integer categoryId = jdbcClient
                                 .sql("SELECT category_id FROM Categories WHERE category_name = :category")
                                 .param("category", product.category()).query(Integer.class).single();
                 if (categoryId != null) {
                         updated = jdbcClient
-                                        .sql("INSERT INTO Products(product_name, product_description, photo_url, net_weight, price, in_stock, category_id) VALUES (?,?,?,?,?,?,?)")
+                                        .sql("INSERT INTO Products(product_name, product_description, photo_url, net_weight, price, in_stock, category_id)"
+                                                        + " VALUES (?,?,?,?,?,?,?) RETURNING product_id")
                                         .params(
                                                         product.name(),
                                                         product.description(),
@@ -32,9 +33,9 @@ public class ProductRepository {
                                                         product.price(),
                                                         product.inStock(),
                                                         categoryId)
-                                        .update();
+                                        .query(Integer.class).single();
                 }
-                return updated == 1;
+                return updated;
         }
 
         public boolean update(Product product) {
