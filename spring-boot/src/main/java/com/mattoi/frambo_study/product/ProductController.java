@@ -1,9 +1,11 @@
-package com.mattoi.frambo_mock.product;
+package com.mattoi.frambo_study.product;
 
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,19 +22,23 @@ public class ProductController {
     }
 
     @PostMapping("")
-    void create(@ModelAttribute Product product) {
-        repository.create(product);
+    ResponseEntity<?> create(@ModelAttribute Product product) {
+        var createdId = repository.create(product);
+        return new ResponseEntity<Integer>(createdId, HttpStatus.CREATED);
         // return 201 on success
         // return 400 on missing fields
         // return 422 on invalid fields
     }
 
     @PatchMapping(value = { "" }, params = { "id" })
-    void update(@RequestParam("id") Integer id, @ModelAttribute Product product) {
-        repository.update(product);
+    ResponseEntity<?> update(@RequestParam("id") Integer id, @ModelAttribute Product product) {
+        var result = repository.update(product);
+        if (result)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         // return 204 on success
         // return 404 on id not found
         // return 422 on invalid fields
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("")
@@ -54,8 +60,8 @@ public class ProductController {
         // return 404 on id not found
     }
 
-    // consider not allowing deletion and encouraging removing from stock,
-    // since this would mess up the order items table
+    // consider not allowing deletion and encouraging setting inStock to false
+    // instead, since this would mess up the order items table
     /*
      * @DeleteMapping(value = { "" }, params = { "id" })
      * void delete(@RequestParam(name = "id") Integer id) {

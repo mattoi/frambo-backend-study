@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.customer;
+package com.mattoi.frambo_study.customer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mattoi.frambo_mock.exception.EntityNotFoundException;
-import com.mattoi.frambo_mock.exception.InvalidRequestException;
+import com.mattoi.frambo_study.exception.EntityNotFoundException;
+import com.mattoi.frambo_study.exception.InvalidRequestException;
 
 @Service
 public class CustomerService {

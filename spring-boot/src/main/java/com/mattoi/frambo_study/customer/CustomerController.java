@@ -1,11 +1,11 @@
-package com.mattoi.frambo_mock.customer;
+package com.mattoi.frambo_study.customer;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mattoi.frambo_mock.exception.EntityNotFoundException;
-import com.mattoi.frambo_mock.exception.InvalidRequestException;
+import com.mattoi.frambo_study.exception.EntityNotFoundException;
+import com.mattoi.frambo_study.exception.InvalidRequestException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.customer;
+package com.mattoi.frambo_study.customer;
 
 public record Customer(
                 Integer id,

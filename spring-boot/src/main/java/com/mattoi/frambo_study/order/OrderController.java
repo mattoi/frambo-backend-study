@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.order;
+package com.mattoi.frambo_study.order;
 
 import java.util.HashMap;
 import java.util.List;

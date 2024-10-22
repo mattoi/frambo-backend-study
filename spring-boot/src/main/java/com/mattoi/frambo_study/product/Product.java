@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.product;
+package com.mattoi.frambo_study.product;
 
 public record Product(
                 Integer id,

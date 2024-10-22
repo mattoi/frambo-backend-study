@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.customer;
+package com.mattoi.frambo_study.customer;
 
 import java.util.ArrayList;
 import java.util.List;

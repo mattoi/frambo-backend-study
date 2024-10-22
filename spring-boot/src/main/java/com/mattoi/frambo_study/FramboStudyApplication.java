@@ -1,13 +1,13 @@
-package com.mattoi.frambo_mock;
+package com.mattoi.frambo_study;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FramboMockApplication {
+public class FramboStudyApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FramboMockApplication.class, args);
+		SpringApplication.run(FramboStudyApplication.class, args);
 	}
 
 }

@@ -1,1 +1,1 @@
-rootProject.name = "frambo-mock"
+rootProject.name = "frambo-study"

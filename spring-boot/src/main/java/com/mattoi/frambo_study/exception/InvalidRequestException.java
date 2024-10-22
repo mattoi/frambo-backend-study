@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.exception;
+package com.mattoi.frambo_study.exception;
 
 import java.util.List;
 

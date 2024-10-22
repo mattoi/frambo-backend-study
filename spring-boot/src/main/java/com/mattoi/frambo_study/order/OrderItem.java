@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.order;
+package com.mattoi.frambo_study.order;
 
 public record OrderItem(
                 Integer productId,
