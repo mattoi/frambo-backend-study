@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.order;
+package com.mattoi.frambo_study.order;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +14,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
-import com.mattoi.frambo_mock.customer.Customer;
-import com.mattoi.frambo_mock.customer.CustomerRepository;
-import com.mattoi.frambo_mock.product.Category;
-import com.mattoi.frambo_mock.product.Product;
-import com.mattoi.frambo_mock.product.ProductRepository;
+import com.mattoi.frambo_study.customer.Customer;
+import com.mattoi.frambo_study.customer.CustomerRepository;
+import com.mattoi.frambo_study.order.Order;
+import com.mattoi.frambo_study.order.OrderItem;
+import com.mattoi.frambo_study.order.OrderRepository;
+import com.mattoi.frambo_study.product.Category;
+import com.mattoi.frambo_study.product.Product;
+import com.mattoi.frambo_study.product.ProductRepository;
 
 @JdbcTest
 @Import({ OrderRepository.class, CustomerRepository.class, ProductRepository.class })

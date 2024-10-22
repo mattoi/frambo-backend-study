@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.customer;
+package com.mattoi.frambo_study.customer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+
+import com.mattoi.frambo_study.customer.Customer;
+import com.mattoi.frambo_study.customer.CustomerRepository;
 
 @JdbcTest
 @Import(CustomerRepository.class)

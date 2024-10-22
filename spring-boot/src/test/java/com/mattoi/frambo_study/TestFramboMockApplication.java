@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock;
+package com.mattoi.frambo_study;
 
 import org.springframework.boot.SpringApplication;
 

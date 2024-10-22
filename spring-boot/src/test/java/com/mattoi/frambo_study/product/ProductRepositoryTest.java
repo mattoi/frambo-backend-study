@@ -1,4 +1,4 @@
-package com.mattoi.frambo_mock.product;
+package com.mattoi.frambo_study.product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+
+import com.mattoi.frambo_study.product.Category;
+import com.mattoi.frambo_study.product.Product;
+import com.mattoi.frambo_study.product.ProductRepository;
 
 @JdbcTest
 @Import(ProductRepository.class)
