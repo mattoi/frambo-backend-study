@@ -18,7 +18,7 @@ public class CustomerService {
     private CustomerRepository repository;
 
     @Transactional
-    public boolean create(Customer customer) throws InvalidRequestException {
+    public int create(Customer customer) throws InvalidRequestException {
         var errors = new ArrayList<String>();
         if (customer.name() == null || customer.name().length() == 0) {
             errors.add("Name cannot be empty");
@@ -55,9 +55,7 @@ public class CustomerService {
     @Transactional
     boolean update(int id, Customer customer) throws InvalidRequestException, EntityNotFoundException { 
         var errors = new ArrayList<String>();
-        var modifiedFields = new ArrayList<String>();
         if (customer.name() != null) {
-            modifiedFields.add("customer_name");
             if (customer.name().length() == 0) {
                 errors.add("New name cannot be empty");
             } else if (customer.name().length() > 250) {
@@ -66,7 +64,6 @@ public class CustomerService {
         }
 
         if (customer.email() != null) {
-            modifiedFields.add("email_address");
             if (customer.email().length() == 0) {
                 errors.add("New email address can't be empty");
             } else if (customer.email().length() > 250) {
@@ -75,7 +72,6 @@ public class CustomerService {
         }
 
         if (customer.phoneNumber() != null) {
-            modifiedFields.add("phone_number");
             if (customer.phoneNumber().length() < 7) {
                 errors.add("New phone number needs to have at least 7 characters");
             } else if (customer.name().length() > 20) {
@@ -85,7 +81,7 @@ public class CustomerService {
 
         try {
             if (errors.size() == 0) {
-                return repository.update(id, customer, modifiedFields);
+                return repository.update(id, customer);
             }else{
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
