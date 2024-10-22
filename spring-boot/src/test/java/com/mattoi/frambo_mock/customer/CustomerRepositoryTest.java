@@ -66,7 +66,7 @@ public class CustomerRepositoryTest {
     @Test
     public void shouldUpdateClient() {
         var customer = repository.findByPhoneNumber("559811111111");
-        repository.update(customer.id(), new Customer(customer.id(), "Matheus Soares", null, null), List.of("name"));
+        repository.update(customer.id(), new Customer(customer.id(), "Matheus Soares", null, null));
         var updatedClient = repository.findByPhoneNumber("559811111111");
         assertEquals(updatedClient.name(), "Matheus Soares");
     }
