@@ -2,10 +2,11 @@ package com.mattoi.frambo_mock.customer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ public class CustomerService {
 
         if (customer.phoneNumber() == null || customer.phoneNumber().length() < 7) {
             errors.add("Phone number needs to have at least 7 characters");
-        } else if (customer.name().length() > 20) {
+        } else if (customer.phoneNumber().length() > 20) {
             errors.add("Phone number cannot exceed 20 characters");
         }
 
@@ -47,14 +48,23 @@ public class CustomerService {
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
         } catch (DuplicateKeyException e) {
-            errors.add(e.getMessage());
+            // TODO find a way to specify the unique field
+            /*  Pattern pattern = Pattern.compile("Key \\((.*?)\\)=\\((.*?)\\)");
+            Matcher matcher = pattern.matcher(e.getMessage());
+            errors.add("The value "+ matcher.group(2) + " on field " + matcher.group(1) + " is already in use.");    */
+           errors.add("One or more unique fields is already in use");
             throw new InvalidRequestException("Invalid request fields",errors, e);
         }
     }
 
+    //TODO handle case of a user that wants to remove their email
     @Transactional
     boolean update(int id, Customer customer) throws InvalidRequestException, EntityNotFoundException { 
         var errors = new ArrayList<String>();
+
+        if (customer.name() == null && customer.email() == null && customer.phoneNumber() == null)
+       { throw new InvalidRequestException("Invalid request fields", List.of("At least one field is required"), null);}
+
         if (customer.name() != null) {
             if (customer.name().length() == 0) {
                 errors.add("New name cannot be empty");
@@ -85,7 +95,7 @@ public class CustomerService {
             }else{
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
-        } catch (EmptyResultDataAccessException e){
+        } catch (IndexOutOfBoundsException e){
             throw new EntityNotFoundException("Couldn't find a customer with ID " + id, e);
         
         } catch (DuplicateKeyException e) {
@@ -103,7 +113,7 @@ public class CustomerService {
     Customer findById(int id) throws EntityNotFoundException {
         try {
             return repository.findById(id);
-        } catch (EmptyResultDataAccessException e) {
+        } catch (IndexOutOfBoundsException e) {
            throw new EntityNotFoundException("Couldn't find a customer with ID " + id, e); 
         }
     }
