@@ -62,7 +62,7 @@ public class ProductController {
     }
 
     // consider not allowing deletion and encouraging setting inStock to false
-    // instead, since this would mess up the order items table
+    // instead, since this would mess up the order items table.
     /*
      * @DeleteMapping(value = { "" }, params = { "id" })
      * void delete(@RequestParam(name = "id") Integer id) {
