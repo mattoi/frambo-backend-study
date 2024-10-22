@@ -18,7 +18,6 @@ public class CustomerRepository {
                 this.jdbcClient = jdbcClient;
         }
 
-        // TODO test this
         public int create(Customer customer) {
                 var updated = jdbcClient
                                 .sql("INSERT INTO Customers(customer_name, email_address, phone_number) values(?,?,?) RETURNING customer_id")
@@ -26,9 +25,8 @@ public class CustomerRepository {
                 return updated;
         }
 
-        // TODO test this
         public boolean update(int id, Customer customer){
-                String query =  "UPDATE Customers SET ";
+                String query =  "UPDATE Customers SET   ";
                 var objectFields = new ArrayList<Object>();
           
                 if (customer.name() != null){
@@ -45,7 +43,7 @@ public class CustomerRepository {
                 }
                 objectFields.add(customer.id());
                 // Formatting query to remove last comma and add where
-                query = query.substring(0, query.length() - 2) + "WHERE customer_id = ?";
+                query = query.substring(0, query.length() - 2) + " WHERE customer_id = ?";
 
                 var updated = jdbcClient.sql(query)
                                 .params(objectFields)
