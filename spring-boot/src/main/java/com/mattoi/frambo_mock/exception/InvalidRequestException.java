@@ -3,13 +3,13 @@ package com.mattoi.frambo_mock.exception;
 import java.util.List;
 
 public class InvalidRequestException extends Exception {
-private final List<String> errors;
-    public InvalidRequestException(String errorMessage, List<String> errors, Throwable err){
+private final List<String> errorMessages;
+    public InvalidRequestException(String errorMessage, List<String> errorMessages, Throwable err){
         super(errorMessage);
-        this.errors = errors;
+        this.errorMessages = errorMessages;
     }
 
-    public List<String> getErrors(){
-        return errors;
+    public List<String> getMessages(){
+        return errorMessages;
     }
 }

@@ -28,9 +28,9 @@ public class CustomerController {
         try {
            return new ResponseEntity<>(service.create(newCustomer), HttpStatus.CREATED);
         } catch (InvalidRequestException e) {
-           return new ResponseEntity<>(e.getErrors(), HttpStatus.UNPROCESSABLE_ENTITY);
+           return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         } 
-    }
+  }
 
     @PatchMapping(value = { "" }, params = { "id" })
     ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @ModelAttribute Customer updatedCustomer) {
@@ -39,7 +39,7 @@ public class CustomerController {
         } catch (EntityNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (InvalidRequestException e){
-            return new ResponseEntity<>(e.getErrors(), HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
