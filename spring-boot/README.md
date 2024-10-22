@@ -9,7 +9,7 @@ Right now the application works roughly as intended, accepting valid request bod
 Requirements:
 - Windows, Linux or Mac OS
 - Docker Desktop (for the PostgreSQL container)
-- Java 17 or later
+- Java 17 
 
 Setup:
 1. Clone the project repository
@@ -26,10 +26,13 @@ Here you can find descriptions for each type of JSON object representing an enti
 
 ##### TODO
 - Fix the database schema and initial data startup. 
-- Implement the service layer and perform unit tests there instead of in the repository layer.
+- Implement the service layer 
+- Implement @RestControllerAdvice s?
+- Consider making create methods return the newly created row's ID.
+- Use the logger where applicable.
+- Move unit tests from repository to service layer .
 - Implement unit tests involving invalid inputs.
 - Implement integration tests.
-- Use the logger where applicable.
 - Provide the appropriate response codes and bodies (when necessary) for better clarity. Right now, pretty much every successful call returns a 200 and every unsuccessful call returns a 500.
 - Update response bodies in this section after the implementation.
 - Consider using id as a path parameter for update methods instead of being included in the request body.
