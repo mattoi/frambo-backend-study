@@ -1,7 +1,5 @@
 package com.mattoi.frambo_study.product;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.http.HttpStatus;
@@ -12,52 +10,55 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mattoi.frambo_study.exception.EntityNotFoundException;
+import com.mattoi.frambo_study.exception.InvalidRequestException;
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    private ProductRepository repository;
+    private ProductService service;
 
-    public ProductController(ProductRepository repository) {
-        this.repository = repository;
+    public ProductController(ProductService service) {
+        this.service = service;
     }
 
     @PostMapping("")
     ResponseEntity<?> create(@ModelAttribute Product product) {
-        var createdId = repository.create(product);
-        return new ResponseEntity<Integer>(createdId, HttpStatus.CREATED);
-        // return 201 on success
-        // return 400 on missing fields
-        // return 422 on invalid fields
+        try{
+            return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
+        } catch (InvalidRequestException e){
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @PatchMapping(value = { "" }, params = { "id" })
     ResponseEntity<?> update(@RequestParam("id") Integer id, @ModelAttribute Product product) {
-        var result = repository.update(product);
-        if (result)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        // return 204 on success
-        // return 404 on id not found
-        // return 422 on invalid fields
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        try{
+            return new ResponseEntity<>(service.update(id, product), HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidRequestException e){
+            return new ResponseEntity<>(e.getMessages(),HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @GetMapping("")
-    List<Product> findAll() {
-        return repository.findAll();
-        // return 200 on success
+    ResponseEntity<?> findAll() {
+        return new ResponseEntity<>( service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/in_stock")
-    List<Product> findAllInStock() {
-        return repository.findAllInStock();
-        // return 200 on success
+    ResponseEntity<?> findAllInStock() {
+        return new ResponseEntity<>( service.findAllInStock(), HttpStatus.OK);
     }
 
     @GetMapping(value = { "" }, params = { "id" })
-    Product findById(@RequestParam(name = "id") Integer id) {
-        return repository.findById(id);
-        // return 200 on success
-        // return 404 on id not found
+    ResponseEntity<?> findById(@RequestParam(name = "id") Integer id) {
+        try{
+            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
+        }catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     // consider not allowing deletion and encouraging setting inStock to false
@@ -70,25 +71,28 @@ public class ProductController {
      */
 
     @PostMapping("/categories")
-    void createCategory(Category category) {
-        repository.createCategory(category);
-        // return 201 on success
-        // return 400 on missing fields
-        // return 422 on invalid fields
+    ResponseEntity<?> createCategory(Category category) {
+        try{
+            return new ResponseEntity<>(service.createCategory(category), HttpStatus.CREATED);
+        }catch (InvalidRequestException e){
+            return new ResponseEntity<>(e.getMessages(),HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @PatchMapping(value = { "/categories" }, params = { "id" })
-    void updateCategory(@RequestParam("id") Integer id, Category category) {
-        repository.updateCategory(category);
-        // return 204 on success
-        // return 404 on id not found
-        // return 422 on invalid fields
+    ResponseEntity<?> updateCategory(@RequestParam("id") Integer id, Category category) {
+        try{
+            return new ResponseEntity<>(service.updateCategory(id, category),HttpStatus.OK);
+        } catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidRequestException e){
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @GetMapping("/categories")
-    List<Category> findAllCategories() {
-        return repository.findAllCategories();
-        // return 200 on success
+    ResponseEntity<?> findAllCategories() {
+        return new ResponseEntity<>(service.findAllCategories(), HttpStatus.OK);
     }
 
     // same as above
