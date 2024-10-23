@@ -25,17 +25,13 @@ The database schema is set to be executed on startup. After launching the app, y
 Here you can find descriptions for each type of JSON object representing an entity in the application and the endpoints for their manipulation. Fields with a * can't be null, but depending on the HTTP method, some of them can be omitted. I did implement some Delete methods, but realized that the relational structure will rarely allow any deletions, so I chose to disable them.
 
 ##### TODO
-- Fix the database schema and initial data startup. 
 - Implement the service layer 
-- Implement @RestControllerAdvice s?
-- Consider making create methods return the newly created row's ID.
-- Use the logger where applicable.
-- Move unit tests from repository to service layer .
+- Update response bodies in this section after the implementation.
+- Fix the database schema and initial data startup. 
+- Fix unit tests and move them from repository to service layer.
 - Implement unit tests involving invalid inputs.
 - Implement integration tests.
-- Provide the appropriate response codes and bodies (when necessary) for better clarity. Right now, pretty much every successful call returns a 200 and every unsuccessful call returns a 500.
-- Update response bodies in this section after the implementation.
-- Consider using id as a path parameter for update methods instead of being included in the request body.
+- Use the logger where applicable.
 - Implement authentication.
 
 ### Customer
