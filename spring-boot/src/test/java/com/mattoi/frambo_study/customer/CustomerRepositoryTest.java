@@ -11,9 +11,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
-import com.mattoi.frambo_study.customer.Customer;
-import com.mattoi.frambo_study.customer.CustomerRepository;
-
 @JdbcTest
 @Import(CustomerRepository.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

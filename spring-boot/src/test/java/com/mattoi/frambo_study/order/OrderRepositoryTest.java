@@ -16,9 +16,6 @@ import org.springframework.context.annotation.Import;
 
 import com.mattoi.frambo_study.customer.Customer;
 import com.mattoi.frambo_study.customer.CustomerRepository;
-import com.mattoi.frambo_study.order.Order;
-import com.mattoi.frambo_study.order.OrderItem;
-import com.mattoi.frambo_study.order.OrderRepository;
 import com.mattoi.frambo_study.product.Category;
 import com.mattoi.frambo_study.product.Product;
 import com.mattoi.frambo_study.product.ProductRepository;

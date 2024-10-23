@@ -41,29 +41,35 @@ public class CustomerService {
             errors.add("Phone number cannot exceed 20 characters");
         }
 
+        if (errors.size() == 0) {
         try {
-            if (errors.size() == 0) {
                 return repository.create(customer);
-            }else{
+            }
+        }else{
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
-        } catch (DuplicateKeyException e) {
-            // TODO find a way to specify the unique field
-            /*  Pattern pattern = Pattern.compile("Key \\((.*?)\\)=\\((.*?)\\)");
-            Matcher matcher = pattern.matcher(e.getMessage());
-            errors.add("The value "+ matcher.group(2) + " on field " + matcher.group(1) + " is already in use.");    */
-           errors.add("One or more unique fields is already in use");
-            throw new InvalidRequestException("Invalid request fields",errors, e);
-        }
+        catch(DuplicateKeyException e){
+    
+        // TODO find a way to specify the unique field
+        /*
+         * Pattern pattern = Pattern.compile("Key \\((.*?)\\)=\\((.*?)\\)");
+         * Matcher matcher = pattern.matcher(e.getMessage());
+         * errors.add("The value "+ matcher.group(2) + " on field " + matcher.group(1) +
+         * " is already in use.");
+         */
+        errors.add("One or more unique fields is already in use");
+        throw new InvalidRequestException("Invalid request fields", errors, e);}
     }
 
-    //TODO handle case of a user that wants to remove their email
+    // TODO handle case of a user that wants to remove their email
     @Transactional
-    boolean update(int id, Customer customer) throws InvalidRequestException, EntityNotFoundException { 
+    boolean update(int id, Customer customer) throws InvalidRequestException, EntityNotFoundException {
         var errors = new ArrayList<String>();
 
-        if (customer.name() == null && customer.email() == null && customer.phoneNumber() == null)
-       { throw new InvalidRequestException("Invalid request fields", List.of("At least one field is required"), null);}
+        if (customer.name() == null && customer.email() == null && customer.phoneNumber() == null) {
+            throw new InvalidRequestException("Invalid request fields", List.of("At least one field is required"),
+                    null);
+        }
 
         if (customer.name() != null) {
             if (customer.name().length() == 0) {
@@ -92,16 +98,15 @@ public class CustomerService {
         try {
             if (errors.size() == 0) {
                 return repository.update(id, customer);
-            }else{
+            } else {
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
-        } catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             throw new EntityNotFoundException("Couldn't find a customer with ID " + id, e);
-        
         } catch (DuplicateKeyException e) {
             errors.add(e.getMessage());
             throw new InvalidRequestException("Invalid request fields", errors, e);
-        } 
+        }
     }
 
     @Transactional
@@ -114,7 +119,7 @@ public class CustomerService {
         try {
             return repository.findById(id);
         } catch (IndexOutOfBoundsException e) {
-           throw new EntityNotFoundException("Couldn't find a customer with ID " + id, e); 
+            throw new EntityNotFoundException("Couldn't find a customer with ID " + id, e);
         }
     }
 
