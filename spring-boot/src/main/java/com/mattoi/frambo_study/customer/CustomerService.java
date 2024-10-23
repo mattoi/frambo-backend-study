@@ -41,24 +41,23 @@ public class CustomerService {
             errors.add("Phone number cannot exceed 20 characters");
         }
 
-        if (errors.size() == 0) {
         try {
+            if (errors.size() == 0) {
                 return repository.create(customer);
-            }
-        }else{
+            } else {
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
-        catch(DuplicateKeyException e){
-    
-        // TODO find a way to specify the unique field
-        /*
-         * Pattern pattern = Pattern.compile("Key \\((.*?)\\)=\\((.*?)\\)");
-         * Matcher matcher = pattern.matcher(e.getMessage());
-         * errors.add("The value "+ matcher.group(2) + " on field " + matcher.group(1) +
-         * " is already in use.");
-         */
-        errors.add("One or more unique fields is already in use");
-        throw new InvalidRequestException("Invalid request fields", errors, e);}
+        } catch (DuplicateKeyException e) {
+            // TODO find a way to specify the unique field
+            /*
+             * Pattern pattern = Pattern.compile("Key \\((.*?)\\)=\\((.*?)\\)");
+             * Matcher matcher = pattern.matcher(e.getMessage());
+             * errors.add("The value "+ matcher.group(2) + " on field " + matcher.group(1) +
+             * " is already in use.");
+             */
+            errors.add("One or more unique fields is already in use");
+            throw new InvalidRequestException("Invalid request fields", errors, e);
+        }
     }
 
     // TODO handle case of a user that wants to remove their email

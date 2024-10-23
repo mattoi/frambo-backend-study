@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
+import com.mattoi.frambo_study.exception.EntityNotFoundException;
+
 @JdbcTest
 @Import(ProductRepository.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -54,13 +56,13 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void shouldUpdateProduct() {
+    public void shouldUpdateProduct() throws EntityNotFoundException {
         repository.createCategory(testCategories.get(0));
         repository.create(testProducts.get(0));
         var product = repository.findByName("Test Cookie Original");
         String newDescription = "Cookie à base de manteiga com gotas de chocolate branco";
-        repository.update(new Product(
-                product.id(),
+        repository.update(product.id(), new Product(
+                null,
                 product.name(),
                 newDescription,
                 product.photoUrl(),
@@ -141,7 +143,7 @@ public class ProductRepositoryTest {
     public void shouldUpdateCategory() {
         repository.createCategory(testCategories.get(0));
         var categories = repository.findAllCategories();
-        repository.updateCategory(new Category(categories.get(0).id(), "Test Cookie recheado"));
+        repository.updateCategory(categories.get(0).id(), new Category(null, "Test Cookie recheado"));
         categories = repository.findAllCategories();
         assertEquals("Test Cookie recheado", categories.get(0).name());
     }
