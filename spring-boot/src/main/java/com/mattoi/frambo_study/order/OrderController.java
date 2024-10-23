@@ -1,7 +1,6 @@
 package com.mattoi.frambo_study.order;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +44,7 @@ public class OrderController {
         }
     }
 
+    //TODO Maybe the next 4 methods can be condensed into one with multiple params
     @GetMapping("")
     ResponseEntity<?> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
