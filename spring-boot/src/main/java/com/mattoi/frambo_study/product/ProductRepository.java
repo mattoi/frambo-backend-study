@@ -20,12 +20,12 @@ public class ProductRepository {
 	}
 
 	public int create(Product product) {
-		int updated = 0;
+		int newProductId = 0;
 		Integer categoryId = jdbcClient
 				.sql("SELECT category_id FROM Categories WHERE category_name = :category")
 				.param("category", product.category()).query(Integer.class).single();
 		if (categoryId != null) {
-			updated = jdbcClient
+			newProductId = jdbcClient
 					.sql("INSERT INTO Products(product_name, product_description, photo_url, net_weight, price, in_stock, category_id)"
 							+ " VALUES (?,?,?,?,?,?,?) RETURNING product_id")
 					.params(
@@ -38,10 +38,11 @@ public class ProductRepository {
 							categoryId)
 					.query(Integer.class).single();
 		}
-		return updated;
+		return newProductId;
 	}
 
 	//TODO consider creating a new exception for invalid category id
+	@SuppressWarnings("unused")
 	public boolean update(int id, Product product) throws EntityNotFoundException {
 		try{
 
@@ -173,12 +174,12 @@ public class ProductRepository {
 	}
 
 	public int createCategory(Category category) {
-		var id = jdbcClient
+		var newCategoryId = jdbcClient
 				.sql("INSERT INTO Categories(category_name) VALUES (?) RETURNING category_id")
 				.param(category.name())
 				.query(int.class).single();
 
-		return id;
+		return newCategoryId;
 	}
 
 	public boolean updateCategory(Integer id, Category category) {

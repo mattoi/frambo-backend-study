@@ -31,7 +31,7 @@ public class OrderRepository {
                 return updated > 0;
         }
 
-        public boolean create(Order order) {
+        public Integer create(Order order) {
                 jdbcClient
                                 .sql("INSERT INTO Orders(customer_id, total_amount, status_name, date_created, last_updated) values(?,?,?,?,?)")
                                 .params(
@@ -52,7 +52,10 @@ public class OrderRepository {
                                         .sql("INSERT INTO OrderItems(order_id, product_id, quantity) values(?,?,?)")
                                         .params(newOrderId, item.productId(), item.quantity()).update();
                 }
-                return updated > 0 && updated == order.items().size();
+                if (updated > 0 && updated == order.items().size()){
+                        return newOrderId;
+                }
+                return null;
         }
 
         public boolean updateOrderStatus(Integer id, String newStatus) {

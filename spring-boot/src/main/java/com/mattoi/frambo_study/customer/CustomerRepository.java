@@ -19,10 +19,10 @@ public class CustomerRepository {
         }
 
         public int create(Customer customer) {
-                var updated = jdbcClient
+                var newCustomerId = jdbcClient
                                 .sql("INSERT INTO Customers(customer_name, email_address, phone_number) values(?,?,?) RETURNING customer_id")
                                 .params(customer.name(), customer.email(), customer.phoneNumber()).query(int.class).single();
-                return updated;
+                return newCustomerId;
         }
 
         public boolean update(int id, Customer customer){
