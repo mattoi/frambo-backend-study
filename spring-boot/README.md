@@ -16,7 +16,7 @@ Setup:
 2. Make sure Docker Desktop is running
 3. Go to the `./spring-boot/` folder
 4. (Optional) To start the database container independently from the application, run `docker compose up`. Otherwise it will be started automatically with the Spring application, and stopped when it closes.
-5. Run `./gradlew bootRun` to start the application. If you want to use the provided example database rows (recommended for first launch), run `./gradlew bootRun --args='--initializeDefaultValues=true'` instead.
+5. Run `./gradlew bootRun` to start the application. If you want to use the provided example database rows (recommended for first launch), run `./gradlew bootRun --run-initial-data'` instead. This will restore the tables to the example values if they have been modified as well.
 
 The database schema is set to be executed on startup. After launching the app, you can try out the endpoints with a HTTP client like Postman. The provided [request collection](src\main\resources\Frambo.postman_collection.json) can be imported to Postman for an easy setup.
 
@@ -27,7 +27,6 @@ Here you can find descriptions for each type of JSON object representing an enti
 ##### TODO
 - Implement the service layer 
 - Update response bodies in this section after the implementation.
-- Fix the database schema and initial data startup. 
 - Fix unit tests and move them from repository to service layer.
 - Implement unit tests involving invalid inputs.
 - Implement integration tests.
