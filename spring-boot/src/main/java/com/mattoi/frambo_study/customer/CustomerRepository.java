@@ -27,26 +27,26 @@ public class CustomerRepository {
 
         public boolean update(int id, Customer customer){
                 String query =  "UPDATE Customers SET   ";
-                var objectFields = new ArrayList<Object>();
+                var updatedFields = new ArrayList<Object>();
           
                 if (customer.name() != null){
-                        objectFields.add(customer.name());
+                        updatedFields.add(customer.name());
                         query += "customer_name = ?, ";
                 }
                 if (customer.email()!= null){
-                        objectFields.add(customer.email());
+                        updatedFields.add(customer.email());
                         query += "email_address = ?, ";
                 }
                 if (customer.phoneNumber() != null){
-                        objectFields.add(customer.phoneNumber());
+                        updatedFields.add(customer.phoneNumber());
                         query += "phone_number = ?, ";
                 }
-                objectFields.add(customer.id());
+                updatedFields.add(customer.id());
                 // Formatting query to remove last comma and add where
                 query = query.substring(0, query.length() - 2) + " WHERE customer_id = ?";
 
                 var updated = jdbcClient.sql(query)
-                                .params(objectFields)
+                                .params(updatedFields)
                                 .update();
                 return updated == 1;
         }
