@@ -1,15 +1,17 @@
 # Frambô Confeitaria Backend Study
 
-This is the main application for this study project: a Spring Boot web app for a cookie store e-commerce system. It's the follow-up to [this project](https://github.com/mattoi/fcc-spring-boot-tutorial) where I coded along a FreeCodeCamp tutorial. This app provides a database integration and endpoints to access it. The database is set to be containerized for easy setup. You can perform various CRUD operations to manipulate customer, product and order data. I implemented the operations I thought would be useful in a real-life scenario.
+This is the main application for this study project: a Spring Boot MVC web app for a cookie store e-commerce system. It's the follow-up to [this project](https://github.com/mattoi/fcc-spring-boot-tutorial) where I coded along a FreeCodeCamp tutorial. This MVC app provides a database integration and endpoints to access it. The database is set to be containerized for easy setup. You can perform various CRUD operations to manipulate customer, product and order data. I implemented the operations I thought would be useful in a real-life scenario.
 
-Right now the application works roughly as intended, accepting valid request bodies and rejecting invalid entries (thanks to the database schema), (TODO) but it's not doing a good job on communicating what's wrong with each invalid request. The response codes are all over the place and there's no exception handling to communicate that throughout the app, either. My next steps after writing the initial documentation are implementing exceptions and response entities.
+This project features a PostgreSQL database and a repository layer using JDBC. The controllers provide endpoints for managing customers, products and orders. Each request is passed down to the service layer for data validation, checking for errors that the user can correct on their next request. If the request is valid, then it's passed to the repository. I tried to provide coherent status codes and error messages based on good experiences I've had using previous third-party APIs.
+
+For learning purposes, I tried to do as much manual work as possible so I understand how things work without relying on too many abstractions. This includes using JDBC over JPA or CrudRepository, and manually writing the API docs instead of using SpringDoc.
 
 ## How To Run This Application
 
 Requirements:
 - Windows, Linux or Mac OS
-- Docker Desktop (for the PostgreSQL container)
 - Java 17 
+- Docker Desktop (for the PostgreSQL container)
 
 Setup:
 1. Clone the project repository
@@ -31,6 +33,7 @@ Here you can find descriptions for each type of JSON object representing an enti
 - Implement unit tests involving invalid inputs.
 - Implement integration tests.
 - Use the logger where applicable.
+- Consider implementing better null checking across the application.
 - Implement authentication.
 
 ### Customer
@@ -59,7 +62,9 @@ Adds a new customer to the database. The ID is generated automatically.
 ```
 ##### Responses
 ```
-200 OK
+201 Created
+
+*id*
 ```
 
 ```
@@ -72,22 +77,21 @@ Adds a new customer to the database. The ID is generated automatically.
 ```
 
 #### [PATCH] Update customer
-`/api/customers`
+`/api/customers?id={id}`
 
-Updates a costumer's name or contact fields. The provided `id` specifies the customer that will be modified. All the fields need to be present in the request body at the same time, even if some of them are unchanged. 
+Updates a costumer's name or contact fields. The provided `id` specifies the customer that will be modified. 
 
 ##### Request body format
 ```
 {
-    id* (int)
     name (String(250))
-    email* (String(250))
-    phoneNumber* (String(20))
+    email (String(250))
+    phoneNumber (String(20))
 }
 ```
 ##### Responses
 ```
-200 OK
+204 No content
 ```
 
 ```
@@ -186,42 +190,57 @@ Adds a new product to the database. The ID is generated automatically. The `cate
 ```
 ##### Responses
 ```
-200 OK
+201 Created
+
+*id*
 ```
 
 ```
-500 Internal Server Error
+422 Unprocessable Entity
+
+[
+    "Product name cannot be empty",
+    "Product description cannot exceed 250 characters",
+    "Product price must be greater than zero"
+]
 ```
 #### [PATCH] Update product
-`/api/products`
+`/api/products?id={id}`
 
-Updates a product's fields. The provided `id` specifies the poduct that will be modified. All the fields need to be present in the request body at the same time, even if some of them are unchanged. 
+Updates a product's fields. The provided `id` specifies the product that will be modified. 
 
 ##### Request body format
 ```
 {
-    name* (String(50))
-    description* (String(250))
+    name (String(50))
+    description (String(250))
     photoUrl (String(250))
-    netWeight* (int)
-    price* (double)
-    inStock* (boolean)
-    category* (String(50))
+    netWeight (int)
+    price (double)
+    inStock (boolean)
+    category (String(50))
 }
 ```
 ##### Responses
 ```
-200 OK
+204 No Content
 ```
 
 ```
-500 Internal Server Error
+404 Not Found
+
+"Couldn't find a product with ID 35"
 ```
 
-##### TODO
-- Modify repository method so not every single field is required in the response body
-- Entering a non-existing id will result in a 200 but nothing will happen
-  
+```
+422 Unprocessable Entity
+
+[
+    "Product name cannot be empty",
+    "Product net weight must be greater than zero"
+]
+```
+
 #### [GET] All products
 `/api/products`
 
@@ -267,11 +286,10 @@ Returns the product with the specified ID.
 ```
 
 ```
-500 Internal Server Error
-```
+404 Not Found
 
-##### TODO
-- Return a 404 instead of 500
+"Couldn't find a product with ID 35"
+```
 
 #### [GET] Find products in stock
 `/api/products/in_stock`
@@ -308,15 +326,19 @@ Adds a new category to the database. The ID is generated automatically.
 ```
 ##### Responses
 ```
-200 OK
+201 Created
 ```
 
 ```
-500 Internal Server Error
+422 Unprocessable Entity
+
+[
+    "A category with the same name already exists"
+]
 ```
 
 #### [PATCH] Update category
-`/api/products/categories`
+`/api/products/categories?id={id}`
 
 Updates a category's name. The provided `id` specifies the category that will be modified.
 
@@ -332,11 +354,18 @@ Updates a category's name. The provided `id` specifies the category that will be
 ```
 
 ```
-500 Internal Server Error
+404 Not Found
+
+"Couldn't find a category with ID 27"
 ```
 
-##### TODO
-- Entering a non-existing id will result in a 200 but nothing will happen
+```
+422 Unprocessable Entity
+
+[
+    "New category name cannot be empty"
+]
+```
 
 #### [GET] All categories
 `/api/products/categories`
@@ -346,6 +375,13 @@ Returns a list of all categories.
 ##### Responses
 ```
 200 OK
+
+[
+    {
+        id (int)
+        name (String(50))
+    }, ...
+]
 ```
 
 ### Order
@@ -483,7 +519,7 @@ Returns the order associated with the provided ID.
 ```
 
 #### [GET] Find all by customer ID
-`/api/orders?customer_id={id}`
+`/api/orders?id={id}`
 
 Returns a list of all orders associated with the provided customer ID.
 
@@ -535,7 +571,7 @@ Returns a list of all orders marked with the provided status name.
 ```
 
 ## Project structure
-This project is structured in a package-by-feature manner. This means that each entity and all of the classes directly involving it are in the same folder. This made more sense to me, as imports are naturally handed in each package. Details on each layer of the application are descibed below.
+This project features a package-by-feature structure. This means that each entity and all of the classes directly involving it are in the same folder. This made more sense to me, as imports are naturally handed in each package. Details on each layer of the application are descibed below.
 
 ### Database
 The application uses a PostgreSQL database that's containerized using Spring Boot's Docker integration. The [schema](spring-boot\src\main\resources\schema.sql) and some [initial data](spring-boot\src\main\resources\initial_data.sql) for easy testing of the HTTP calls are provided in the resources folder. I tried to add as many constraints as I thought would be in line with a cookie store's business logic, such as not allowing zero-item orders or multiple products with the same name or description. These rules are also checked in the Service layer when possible, to prevent unnecessary database calls. 
@@ -553,7 +589,7 @@ I am considering, however, using Null checking and consequently implementing a "
 The repository classes use `jdbcClient` to interact with the database by using direct SQL queries and operations. I found out about JPA while implementing this layer, and I see how it can be useful for faster prototyping and less error-prone queries, but I wanted to practice my SQL so I went with JDBC instead. Also, apparently JPA can run about 4x slower than JDBC? I didn't test it, but writing pure SQL didn't hurt. 
 
 ### Service Layer
-(TODO) This has not been implemented yet. The service layer is meant to validade requests coming in from the controllers to make sure the request bodies are in line with the business logic. In case of an invalid request, the classes in this layer will attempt to point out all the errors that need fixing in order to turn it into a valid one.
+The `@Service` layer is meant to validade requests coming in from the controllers to make sure the request bodies are in line with the business logic. In case of an invalid request, the methods in this layer will attempt to point out all the errors that need fixing in order to turn it into a valid one.
 
 ### Controller Layer
 This layer uses `@RestController` to offer HTTP endpoints for the various database operations implemented in the project. By default, `@ModelAttribute` uses Jackson to automatically convert the data classes into JSON and vice-versa, but in some methods it was preferrable to use `@RequestBody` with a `Map` to get more specific results. (TODO) I'm making an effort to make sure each method returns an appropriate response code for each type of input, and show the errors found in the Service layer when applicable.
