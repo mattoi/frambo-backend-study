@@ -12,21 +12,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
 @JdbcTest
-@Import(CustomerRepository.class)
+@Import(CustomerService.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class CustomerRepositoryTest {
+public class CustomerServiceTest {
     @Autowired
-    private CustomerRepository repository;
+    private CustomerService service;
 
     @BeforeEach
     void setup() {
-        repository.create(
+        service.create(
                 new Customer(
                         null,
                         "Cecilia",
                         "cecilia@email.com",
                         "559811111111"));
-        repository.create(
+        service.create(
                 new Customer(
                         null,
                         "Matheus",
@@ -36,14 +36,14 @@ public class CustomerRepositoryTest {
 
     @Test
     public void shouldCreateNewCustomer() {
-        repository.create(new Customer(null, "Ayla", "ayla@email.com", "559833333333"));
-        var customers = repository.findAll();
+        service.create(new Customer(null, "Ayla", "ayla@email.com", "559833333333"));
+        var customers = service.findAll();
         assertEquals(3, customers.size());
     }
 
     @Test
     public void shouldFindAllCustomers() {
-        List<Customer> customers = repository.findAll();
+        List<Customer> customers = service.findAll();
         assertEquals(2, customers.size());
     }
 
@@ -52,30 +52,30 @@ public class CustomerRepositoryTest {
     // findByPhoneNumber to get the ID first
     @Test
     public void shouldFindByPhoneNumber() {
-        var customer = repository.findByPhoneNumber("559811111111");
+        var customer = service.findByPhoneNumber("559811111111");
         assertEquals("Cecilia", customer.name());
     }
 
     @Test
     public void shouldFindById() {
-        var customerFromPhoneNumber = repository.findByPhoneNumber("559811111111");
-        var customerFromId = repository.findById(customerFromPhoneNumber.id());
+        var customerFromPhoneNumber = service.findByPhoneNumber("559811111111");
+        var customerFromId = service.findById(customerFromPhoneNumber.id());
         assertEquals(customerFromId, customerFromPhoneNumber);
     }
 
     @Test
     public void shouldUpdateClient() {
-        var customer = repository.findByPhoneNumber("559811111111");
-        repository.update(customer.id(), new Customer(customer.id(), "Matheus Soares", null, null));
-        var updatedClient = repository.findByPhoneNumber("559811111111");
+        var customer = service.findByPhoneNumber("559811111111");
+        service.update(customer.id(), new Customer(customer.id(), "Matheus Soares", null, null));
+        var updatedClient = service.findByPhoneNumber("559811111111");
         assertEquals(updatedClient.name(), "Matheus Soares");
     }
 
     @Test
     public void shouldDeleteClient() {
-        var customer = repository.findByPhoneNumber("559811111111");
-        repository.delete(customer.id());
-        var customers = repository.findAll();
+        var customer = service.findByPhoneNumber("559811111111");
+        service.delete(customer.id());
+        var customers = service.findAll();
         assertEquals(1, customers.size());
     }
 }

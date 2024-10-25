@@ -14,11 +14,11 @@ import org.springframework.context.annotation.Import;
 import com.mattoi.frambo_study.exception.EntityNotFoundException;
 
 @JdbcTest
-@Import(ProductRepository.class)
+@Import(ProductService.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ProductRepositoryTest {
+public class ProductServiceTest {
     @Autowired
-    private ProductRepository repository;
+    private ProductService service;
 
     List<Product> testProducts = List.of(new Product(null,
             "Test Cookie Original",
@@ -48,20 +48,20 @@ public class ProductRepositoryTest {
 
     @Test
     public void shouldCreateNewProduct() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var products = repository.findAll();
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var products = service.findAll();
         assertEquals(1, products.size());
 
     }
 
     @Test
     public void shouldUpdateProduct() throws EntityNotFoundException {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var product = repository.findByName("Test Cookie Original");
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var product = service.findByName("Test Cookie Original");
         String newDescription = "Cookie à base de manteiga com gotas de chocolate branco";
-        repository.update(product.id(), new Product(
+        service.update(product.id(), new Product(
                 null,
                 product.name(),
                 newDescription,
@@ -70,7 +70,7 @@ public class ProductRepositoryTest {
                 product.price(),
                 product.inStock(),
                 product.category()));
-        var updatedProduct = repository.findByName("Test Cookie Original");
+        var updatedProduct = service.findByName("Test Cookie Original");
 
         assertEquals(newDescription, updatedProduct.description());
 
@@ -78,89 +78,89 @@ public class ProductRepositoryTest {
 
     @Test
     public void shouldUpdateProductAvailability() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var product = repository.findByName("Test Cookie Original");
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var product = service.findByName("Test Cookie Original");
         assertEquals(true, product.inStock());
-        repository.updateProductAvailability(product.id(), false);
-        var updatedProduct = repository.findByName("Test Cookie Original");
+        service.updateProductAvailability(product.id(), false);
+        var updatedProduct = service.findByName("Test Cookie Original");
         assertEquals(false, updatedProduct.inStock());
     }
 
     @Test
     public void shouldFindAllProducts() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var products = repository.findAll();
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var products = service.findAll();
         assertEquals(1, products.size());
     }
 
     @Test
     public void shouldFindAllProductsInStock() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        repository.create(testProducts.get(1));
-        var productsInStock = repository.findAllInStock();
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        service.create(testProducts.get(1));
+        var productsInStock = service.findAllInStock();
         assertEquals(1, productsInStock.size());
     }
 
     @Test
     public void shouldFindProductByName() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var product = repository.findByName("Test Cookie Original");
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var product = service.findByName("Test Cookie Original");
 
         assertEquals("Test Cookie Original", product.name());
     }
 
     @Test
     public void shouldFindProductById() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var product = repository.findByName("Test Cookie Original");
-        var productById = repository.findById(product.id());
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var product = service.findByName("Test Cookie Original");
+        var productById = service.findById(product.id());
         assertEquals(product.id(), productById.id());
     }
 
     @Test
     public void shouldDeleteProduct() {
-        repository.createCategory(testCategories.get(0));
-        repository.create(testProducts.get(0));
-        var product = repository.findByName("Test Cookie Original");
-        repository.delete(product.id());
-        var products = repository.findAll();
+        service.createCategory(testCategories.get(0));
+        service.create(testProducts.get(0));
+        var product = service.findByName("Test Cookie Original");
+        service.delete(product.id());
+        var products = service.findAll();
         assertEquals(0, products.size());
     }
 
     @Test
     public void shouldCreateCategory() {
-        repository.createCategory(testCategories.get(0));
-        var categories = repository.findAllCategories();
+        service.createCategory(testCategories.get(0));
+        var categories = service.findAllCategories();
         assertEquals(1, categories.size());
     }
 
     @Test
     public void shouldUpdateCategory() {
-        repository.createCategory(testCategories.get(0));
-        var categories = repository.findAllCategories();
-        repository.updateCategory(categories.get(0).id(), new Category(null, "Test Cookie recheado"));
-        categories = repository.findAllCategories();
+        service.createCategory(testCategories.get(0));
+        var categories = service.findAllCategories();
+        service.updateCategory(categories.get(0).id(), new Category(null, "Test Cookie recheado"));
+        categories = service.findAllCategories();
         assertEquals("Test Cookie recheado", categories.get(0).name());
     }
 
     @Test
     public void shouldFindAllCategories() {
-        repository.createCategory(testCategories.get(0));
-        List<Category> categories = repository.findAllCategories();
+        service.createCategory(testCategories.get(0));
+        List<Category> categories = service.findAllCategories();
         assertEquals(1, categories.size());
     }
 
     @Test
     public void shouldDeleteCategory() {
-        repository.createCategory(testCategories.get(0));
-        var categories = repository.findAllCategories();
-        repository.deleteCategory(categories.get(0).id());
-        categories = repository.findAllCategories();
+        service.createCategory(testCategories.get(0));
+        var categories = service.findAllCategories();
+        service.deleteCategory(categories.get(0).id());
+        categories = service.findAllCategories();
         assertEquals(0, categories.size());
     }
 
