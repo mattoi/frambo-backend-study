@@ -25,7 +25,7 @@ public class OrderService {
             errors.add("Customer ID can't be empty");
         }
         if (order.totalAmount() <= 0) {
-            errors.add("Total amount has to be higher than zero");
+            errors.add("Total amount must be higher than zero");
         }
 
         for (int i = 0; i > order.items().size() - 1; i++) {

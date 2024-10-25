@@ -27,13 +27,11 @@ The database schema is set to be executed on startup. After launching the app, y
 Here you can find descriptions for each type of JSON object representing an entity in the application and the endpoints for their manipulation. Fields with a * can't be null, but depending on the HTTP method, some of them can be omitted. I did implement some Delete methods, but realized that the relational structure will rarely allow any deletions, so I chose to disable them.
 
 ##### TODO
-- Implement the service layer 
-- Update response bodies in this section after the implementation.
 - Fix unit tests and move them from repository to service layer.
 - Implement unit tests involving invalid inputs.
 - Implement integration tests.
 - Use the logger where applicable.
-- Consider implementing better null checking across the application.
+- Consider implementing better null checking across the project.
 - Implement authentication.
 
 ### Customer
@@ -350,7 +348,7 @@ Updates a category's name. The provided `id` specifies the category that will be
 ```
 ##### Responses
 ```
-200 OK
+204 No Content
 ```
 
 ```
@@ -422,7 +420,7 @@ Adds a new order to the database. The ID is generated automatically. The `custom
 {
     customerId (int)
     totalAmount (double)
-    items (array)[
+    items [
         {
             productId (int)
             productName (String(50))
@@ -434,11 +432,20 @@ Adds a new order to the database. The ID is generated automatically. The `custom
 ```
 ##### Responses
 ```
-200 OK
+201 Created
+
+*id*
 ```
 
 ```
-500 Internal Server Error
+422 Unprocessable Entity
+
+[
+    "Total amount must be higher than zero",
+    "Item 1: Product ID can't be empty",
+    "Item 3: Quantity must be higher than zero",
+    "Couldn't find a customer with ID 70"
+]
 ```
 
 #### [PATCH] Update order status
@@ -454,15 +461,22 @@ Updates an order's status.
 ```
 ##### Responses
 ```
-200 OK
+204 No Content
 ```
 
 ```
-500 Internal Server Error
+404 Not Found
+
+"Couldn't find an order with ID 53"
 ```
 
-##### TODO
-- Entering a non-existing id will result in a 200 but nothing will happen
+```
+422 Unprocessable Entity
+
+[
+    "Invalid status"
+]
+```
 
 #### [GET] All orders
 `/api/orders`
@@ -477,7 +491,7 @@ Returns a list with all registered orders.
     {
         id (int)
         customerId (int)
-        items (array)[
+        items [
             {
                 productId (int)
                 productName (String(50))
@@ -504,7 +518,7 @@ Returns the order associated with the provided ID.
 {
     id (int)
     customerId (int)
-    items (array)[
+    items [
         {
             productId (int)
             productName (String(50))
@@ -518,8 +532,14 @@ Returns the order associated with the provided ID.
 }
 ```
 
+```
+404 Not Found
+
+"Couldn't find an order with ID 28"
+```
+
 #### [GET] Find all by customer ID
-`/api/orders?id={id}`
+`/api/orders?customer_id={id}`
 
 Returns a list of all orders associated with the provided customer ID.
 
@@ -530,7 +550,7 @@ Returns a list of all orders associated with the provided customer ID.
 {
     id (int)
     customerId (int)
-    items (array)[
+    items [
         {
             productId (int)
             productName (String(50))
@@ -556,7 +576,7 @@ Returns a list of all orders marked with the provided status name.
 {
     id (int)
     customerId (int)
-    items (array)[
+    items [
         {
             productId (int)
             productName (String(50))
@@ -592,4 +612,4 @@ The repository classes use `jdbcClient` to interact with the database by using d
 The `@Service` layer is meant to validade requests coming in from the controllers to make sure the request bodies are in line with the business logic. In case of an invalid request, the methods in this layer will attempt to point out all the errors that need fixing in order to turn it into a valid one.
 
 ### Controller Layer
-This layer uses `@RestController` to offer HTTP endpoints for the various database operations implemented in the project. By default, `@ModelAttribute` uses Jackson to automatically convert the data classes into JSON and vice-versa, but in some methods it was preferrable to use `@RequestBody` with a `Map` to get more specific results. (TODO) I'm making an effort to make sure each method returns an appropriate response code for each type of input, and show the errors found in the Service layer when applicable.
+This layer uses `@RestController` to offer HTTP endpoints for the various database operations implemented in the project. By default, `@ModelAttribute` uses Jackson to automatically convert the data classes into JSON and vice-versa, but in some methods it was preferrable to use `@RequestBody` with a `Map` to get more specific results. Each method returns an appropriate response code for each type of input, and show the errors found in the Service layer when applicable.
