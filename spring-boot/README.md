@@ -33,6 +33,8 @@ Here you can find descriptions for each type of JSON object representing an enti
 - Use the logger where applicable.
 - Consider implementing better null checking across the project.
 - Implement authentication.
+- Settle on using either order status id or order status name.
+- Some minor fixes marked TODO in the class files.
 
 ### Customer
 
@@ -62,7 +64,7 @@ Adds a new customer to the database. The ID is generated automatically.
 ```
 201 Created
 
-*id*
+id (int)
 ```
 
 ```
@@ -190,7 +192,7 @@ Adds a new product to the database. The ID is generated automatically. The `cate
 ```
 201 Created
 
-*id*
+id (int)
 ```
 
 ```
@@ -325,6 +327,8 @@ Adds a new category to the database. The ID is generated automatically.
 ##### Responses
 ```
 201 Created
+
+id (int)
 ```
 
 ```
@@ -434,7 +438,7 @@ Adds a new order to the database. The ID is generated automatically. The `custom
 ```
 201 Created
 
-*id*
+id (int)
 ```
 
 ```
@@ -451,7 +455,7 @@ Adds a new order to the database. The ID is generated automatically. The `custom
 #### [PATCH] Update order status
 `/api/orders?id={id}`
 
-Updates an order's status. 
+Updates an order's status and its last_updated time. 
 
 ##### Request body format
 ```
