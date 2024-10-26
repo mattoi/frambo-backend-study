@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Import;
 
 import com.mattoi.frambo_study.customer.Customer;
 import com.mattoi.frambo_study.customer.CustomerService;
+import com.mattoi.frambo_study.exception.EntityNotFoundException;
+import com.mattoi.frambo_study.exception.InvalidRequestException;
 import com.mattoi.frambo_study.product.Category;
 import com.mattoi.frambo_study.product.Product;
 import com.mattoi.frambo_study.product.ProductService;
@@ -33,12 +35,12 @@ public class OrderServiceTest {
 	@Autowired
 	private ProductService productService;
 
-	Integer clientId;
+	Integer customerId;
 	List<Product> products = new ArrayList<Product>();
 	List<Order> testOrders = new ArrayList<Order>();
 
 	@BeforeEach
-	void setup() {
+	void setup() throws InvalidRequestException, EntityNotFoundException {
 		// service.initializeStatus();
 		customerService.create(
 				new Customer(
@@ -71,10 +73,10 @@ public class OrderServiceTest {
 				12.00,
 				true,
 				"Test Cookie"));
-		clientId = customerService.findByPhoneNumber("5559822222222").id();
+		customerId = customerService.findByPhoneNumber("5559822222222").id();
 		products = productService.findAll();
 		testOrders = List.of(new Order(null,
-				clientId,
+				customerId,
 				List.of(
 						new OrderItem(
 								products.get(0).id(),
@@ -90,7 +92,7 @@ public class OrderServiceTest {
 				LocalDateTime.now(),
 				LocalDateTime.now()),
 				new Order(null,
-						clientId + 1,
+						customerId + 1,
 						List.of(
 								new OrderItem(
 										products.get(0).id(),
@@ -108,28 +110,28 @@ public class OrderServiceTest {
 	}
 
 	@Test
-	public void shouldCreateNewOrder() {
-		var result = service.create(testOrders.get(0));
+	public void shouldCreateNewOrder() throws InvalidRequestException {
+		Integer result = service.create(testOrders.get(0));
 		assertEquals(true, result != null);
 	}
 
 	@Test
-	public void shouldUpdateOrderStatus() {
+	public void shouldUpdateOrderStatus() throws InvalidRequestException, EntityNotFoundException {
 		service.create(testOrders.get(0));
-		var orderId = service.findAllByCustomerId(clientId).get(0).id();
+		var orderId = service.findAllByCustomerId(customerId).get(0).id();
 		var result = service.updateOrderStatus(orderId, "SHIPPED");
 		assertEquals(true, result);
 	}
 
 	@Test
-	public void shouldFindAllOrders() {
+	public void shouldFindAllOrders() throws InvalidRequestException {
 		service.create(testOrders.get(0));
 		var orders = service.findAll();
 		assertEquals(true, orders.size() >= 1);
 	}
 
 	@Test
-	public void shouldFindOrderById() {
+	public void shouldFindOrderById() throws InvalidRequestException, EntityNotFoundException {
 		service.create(testOrders.get(0));
 		var orderId = service.findAll().get(0).id();
 		var savedOrder = service.findById(orderId);
@@ -137,7 +139,7 @@ public class OrderServiceTest {
 	}
 
 	@Test
-	public void shouldFindOrdersByClientId() {
+	public void shouldFindOrdersByClientId() throws InvalidRequestException, EntityNotFoundException {
 		service.create(testOrders.get(0));
 		service.create(testOrders.get(1));
 		var ordersFromFirstCustomer = service.findAllByCustomerId(testOrders.get(0).customerId());
@@ -145,7 +147,7 @@ public class OrderServiceTest {
 	}
 
 	@Test
-	public void shouldFindOrdersByStatus() {
+	public void shouldFindOrdersByStatus() throws InvalidRequestException {
 		service.create(testOrders.get(0));
 		var pendingOrders = service.findAllByStatus("PAYMENT_PENDING");
 		assertEquals(true, pendingOrders.size() >= 1);
