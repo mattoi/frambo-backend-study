@@ -72,14 +72,14 @@ public class ProductService {
                     null);
         }
 
-        if (product.name() != null){  
+        if (product.name() != null) {
             if (product.name().isEmpty()) {
                 errors.add("Product name cannot be empty");
             } else if (product.name().length() > 250) {
-               errors.add("Product name cannot exceed 250 characters");
+                errors.add("Product name cannot exceed 250 characters");
             }
         }
-        if (product.description() != null){
+        if (product.description() != null) {
             if (product.description().isEmpty()) {
                 errors.add("Product description cannot be empty");
             } else if (product.description().length() > 250) {
@@ -93,23 +93,30 @@ public class ProductService {
                 errors.add("Product photo URL cannot exceed 250 characters");
             }
         }
-        if (product.netWeight()!= null){
-        if (product.netWeight() <= 0) {
-            errors.add("Product net weight must be greater than zero");
-        }}
-        if (product.price()!= null){
-        if (product.price() <= 0) {
-            errors.add("Product price must be greater than zero");
-        }}
-        //TODO maybe entering "inStock = null" will throw a sql error
-        // find a way to differentiate between not including inStock and setting it to null
-        /* if (product.inStock() == null) {
-            errors.add("Product in stock status cannot be null");
-        } */
-        //TODO Same here
-       /*  if (product.category() == null) {
-            errors.add("Product category cannot be null");
-        } */
+        if (product.netWeight() != null) {
+            if (product.netWeight() <= 0) {
+                errors.add("Product net weight must be greater than zero");
+            }
+        }
+        if (product.price() != null) {
+            if (product.price() <= 0) {
+                errors.add("Product price must be greater than zero");
+            }
+        }
+        // TODO maybe entering "inStock = null" will throw a sql error
+        // find a way to differentiate between not including inStock and setting it to
+        // null
+        /*
+         * if (product.inStock() == null) {
+         * errors.add("Product in stock status cannot be null");
+         * }
+         */
+        // TODO Same here
+        /*
+         * if (product.category() == null) {
+         * errors.add("Product category cannot be null");
+         * }
+         */
 
         try {
             if (errors.size() == 0) {
@@ -141,6 +148,14 @@ public class ProductService {
             return repository.findById(id);
         } catch (IndexOutOfBoundsException e) {
             throw new EntityNotFoundException("Couldn't find a product with ID " + id, e);
+        }
+    }
+
+    public Product findByName(String name) throws EntityNotFoundException {
+        try {
+            return repository.findByName(name);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EntityNotFoundException("Couldn't find a product named " + name, e);
         }
     }
 

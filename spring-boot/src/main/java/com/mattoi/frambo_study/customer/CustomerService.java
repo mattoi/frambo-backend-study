@@ -122,4 +122,13 @@ public class CustomerService {
         }
     }
 
+    // This method is used mostly for unit testing
+    @Transactional
+    public Customer findByPhoneNumber(String phoneNumber) throws EntityNotFoundException {
+        try {
+            return repository.findByPhoneNumber(phoneNumber);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EntityNotFoundException("Couldn't find a customer with phone number " + phoneNumber, e);
+        }
+    }
 }
