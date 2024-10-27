@@ -6,6 +6,8 @@ This project features a PostgreSQL database and a repository layer using JDBC. T
 
 For learning purposes, I tried to do as much manual work as possible so I understand how things work without relying on too many abstractions. This includes using JDBC over JPA or CrudRepository, and manually writing the API docs instead of using SpringDoc.
 
+As for the tests and why they're incomplete, I initially created some unit tests for the repository layer because I didn't know about the usefulness of a service layer. And by the time I finished the controller methods, I skipped straight to implementing the service layer instead of writing integration tests for the API calls. So that's why, for the moment being, there are only a handful of unit tests, most of them not working, and no integration tests. That's the next thing I'll fix.
+
 ## How To Run This Application
 
 Requirements:
@@ -27,6 +29,7 @@ The database schema is set to be executed on startup. After launching the app, y
 Here you can find descriptions for each type of JSON object representing an entity in the application and the endpoints for their manipulation. Fields with a * can't be null, but depending on the HTTP method, some of them can be omitted. I did implement some Delete methods, but realized that the relational structure will rarely allow any deletions, so I chose to disable them.
 
 ##### TODO
+- Update postman collection file.
 - Fix unit tests and move them from repository to service layer.
 - Implement unit tests involving invalid inputs.
 - Implement integration tests.
