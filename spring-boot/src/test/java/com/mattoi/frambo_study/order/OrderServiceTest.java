@@ -147,7 +147,7 @@ public class OrderServiceTest {
 	}
 
 	@Test
-	public void shouldFindOrdersByStatus() throws InvalidRequestException {
+	public void shouldFindOrdersByStatus() throws InvalidRequestException, EntityNotFoundException {
 		service.create(testOrders.get(0));
 		var pendingOrders = service.findAllByStatus("PAYMENT_PENDING");
 		assertEquals(true, pendingOrders.size() >= 1);
