@@ -27,24 +27,26 @@ public class OrderController {
     @PostMapping("")
     ResponseEntity<?> create(@RequestBody Order order) {
         try {
-           return new ResponseEntity<>(service.create(order), HttpStatus.CREATED);
+            return new ResponseEntity<>(service.create(order), HttpStatus.CREATED);
         } catch (InvalidRequestException e) {
-           return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
-        } 
-    }
-
-    @PatchMapping(value = { "" }, params = { "id" })
-    ResponseEntity<?> updateOrderStatus(@RequestParam(name = "id") Integer id, @RequestBody HashMap<String, String> status) {
-           try{
-            return new ResponseEntity<>(service.updateOrderStatus(id, status.get("status")), HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (InvalidRequestException e){
             return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
-    //TODO Maybe the next 4 methods can be condensed into one with multiple params
+    @PatchMapping(value = { "" }, params = { "id" })
+    ResponseEntity<?> updateOrderStatus(@RequestParam(name = "id") Integer id,
+            @RequestBody HashMap<String, String> status) {
+        try {
+            return new ResponseEntity<>(service.updateOrderStatus(id, status.get("status")), HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidRequestException e) {
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    // TODO include order.totalAmount() in get methods outputs
+    // TODO Maybe the next 4 methods can be condensed into one with multiple params
     @GetMapping("")
     ResponseEntity<?> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
@@ -52,24 +54,28 @@ public class OrderController {
 
     @GetMapping(value = { "" }, params = { "id" })
     ResponseEntity<?> findById(@RequestParam(name = "id") Integer id) {
-        try{
+        try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } 
+        }
     }
 
     @GetMapping(value = { "" }, params = { "customer_id" })
     ResponseEntity<?> findAllByCustomerId(@RequestParam(name = "customer_id") Integer customerId) {
-        try{
+        try {
             return new ResponseEntity<>(service.findAllByCustomerId(customerId), HttpStatus.OK);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } 
+        }
     }
 
     @GetMapping(value = { "" }, params = { "status" })
-    ResponseEntity<?>findAllByStatus(@RequestParam(name = "status") String status) {
+    ResponseEntity<?> findAllByStatus(@RequestParam(name = "status") String status) {
+        try {
             return new ResponseEntity<>(service.findAllByStatus(status), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }
