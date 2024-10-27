@@ -41,60 +41,51 @@ public class ProductRepository {
 		return newProductId;
 	}
 
-	//TODO consider creating a new exception for invalid category id
-	@SuppressWarnings("unused")
 	public boolean update(int id, Product product) throws EntityNotFoundException {
-		try{
-
-			Integer categoryId = jdbcClient
-			.sql("SELECT category_id FROM Categories WHERE category_name = :category")
-			.param("category", product.category()).query(Integer.class).single();
-			if (categoryId != null) {
-				String query = "UPDATE Products SET   ";
-				var updatedFields = new ArrayList<Object>();
-				if (product.name() != null) {
-					updatedFields.add(product.name());
-					query += "product_name =?, ";
+		String query = "UPDATE Products SET   ";
+		var updatedFields = new ArrayList<Object>();
+		if (product.name() != null) {
+			updatedFields.add(product.name());
+			query += "product_name = ?, ";
+		}
+		if (product.description() != null) {
+			updatedFields.add(product.description());
+			query += "product_description = ?, ";
+		}
+		if (product.photoUrl() != null) {
+			updatedFields.add(product.photoUrl());
+			query += "photo_url = ?, ";
+		}
+		if (product.netWeight() != null) {
+			updatedFields.add(product.netWeight());
+			query += "net_weight = ?, ";
+		}
+		if (product.price() != null) {
+			updatedFields.add(product.price());
+			query += "price = ?, ";
+		}
+		if (product.inStock() != null) {
+			updatedFields.add(product.inStock());
+			query += "in_stock = ?, ";
+		}
+		try {
+			if (product.category() != null) {
+				Integer categoryId = jdbcClient
+						.sql("SELECT category_id FROM Categories WHERE category_name = ?")
+						.param(product.category()).query(Integer.class).single();
+				if (categoryId != null) {
+					updatedFields.add(categoryId);
+					query += "category_id = ?, ";
 				}
-				if (product.description()!= null) {
-					updatedFields.add(product.description());
-					query += "product_description =?, ";
-				}
-				if (product.photoUrl()!= null) {
-					updatedFields.add(product.photoUrl());
-					query += "photo_url =?, ";
-				}
-				if (product.netWeight()!= null) {
-					updatedFields.add(product.netWeight());
-					query += "net_weight =?, ";
-				}
-				if (product.price()!= null) {
-					updatedFields.add(product.price());
-					query += "price =?, ";
-				}
-				if (product.inStock()!= null) {
-					updatedFields.add(product.inStock());
-					query += "in_stock =?, ";
-            }
-			// Formatting query to remove last comma and add where
-			query = query.substring(0, query.length() -2) +  "WHERE product_id =?";
-			var updated = jdbcClient
-			.sql(query)
-			.params(
-				product.name(),
-				product.description(),
-				product.photoUrl(),
-				product.netWeight(),
-				product.price(),
-				product.inStock(),
-				id)
-				.update();
-				return updated == 1;
-			} 
-			} catch (IndexOutOfBoundsException e){
-            	throw new EntityNotFoundException("Couldn't find a category with ID " + id, e);
 			}
-		return false;
+		} catch (IndexOutOfBoundsException e) {
+			throw new EntityNotFoundException("Couldn't find a category with ID " + id, e);
+		}
+		updatedFields.add(id);
+		// Formatting query to remove last comma and add where
+		query = query.substring(0, query.length() - 2) + "  WHERE product_id = ?";
+		var updated = jdbcClient.sql(query).params(updatedFields).update();
+		return updated == 1;
 	}
 
 	public boolean updateProductAvailability(Integer productId, boolean inStock) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,6 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    // TODO test all of these
     @Transactional
     public int create(Product product) throws InvalidRequestException {
         var errors = new ArrayList<String>();
@@ -57,6 +57,7 @@ public class ProductService {
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
         } catch (DuplicateKeyException e) {
+            errors.add("One of the fields is already in use");
             throw new InvalidRequestException("Invalid request fields", errors, e);
         }
     }
@@ -103,28 +104,31 @@ public class ProductService {
                 errors.add("Product price must be greater than zero");
             }
         }
-        // TODO maybe entering "inStock = null" will throw a sql error
-        // find a way to differentiate between not including inStock and setting it to
-        // null
+
         /*
          * if (product.inStock() == null) {
          * errors.add("Product in stock status cannot be null");
          * }
          */
-        // TODO Same here
-        /*
-         * if (product.category() == null) {
-         * errors.add("Product category cannot be null");
-         * }
-         */
+
+        if (product.category() != null) {
+            if (product.category().length() == 0) {
+                errors.add("Product category name cannot be empty");
+            }
+        }
 
         try {
             if (errors.size() == 0) {
-                return repository.update(id, product);
+                var result = repository.update(id, product);
+                if (result) {
+                    return result;
+                } else {
+                    throw new EntityNotFoundException("Couldn't find a product with ID " + id, null);
+                }
             } else {
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }
-        } catch (IndexOutOfBoundsException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException("Couldn't find a product with ID " + id, e);
         } catch (DuplicateKeyException e) {
             errors.add(e.getMessage());
