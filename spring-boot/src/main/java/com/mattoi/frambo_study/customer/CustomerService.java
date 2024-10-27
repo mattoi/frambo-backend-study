@@ -96,7 +96,12 @@ public class CustomerService {
 
         try {
             if (errors.size() == 0) {
-                return repository.update(id, customer);
+                var result = repository.update(id, customer);
+                if (result) {
+                    return result;
+                } else {
+                    throw new EntityNotFoundException("Couldn't find a customer with ID " + id, null);
+                }
             } else {
                 throw new InvalidRequestException("Invalid request fields", errors, null);
             }

@@ -21,27 +21,28 @@ public class CustomerRepository {
         public int create(Customer customer) {
                 var newCustomerId = jdbcClient
                                 .sql("INSERT INTO Customers(customer_name, email_address, phone_number) values(?,?,?) RETURNING customer_id")
-                                .params(customer.name(), customer.email(), customer.phoneNumber()).query(int.class).single();
+                                .params(customer.name(), customer.email(), customer.phoneNumber()).query(int.class)
+                                .single();
                 return newCustomerId;
         }
 
-        public boolean update(int id, Customer customer){
-                String query =  "UPDATE Customers SET   ";
+        public boolean update(int id, Customer customer) {
+                String query = "UPDATE Customers SET   ";
                 var updatedFields = new ArrayList<Object>();
-          
-                if (customer.name() != null){
+
+                if (customer.name() != null) {
                         updatedFields.add(customer.name());
                         query += "customer_name = ?, ";
                 }
-                if (customer.email()!= null){
+                if (customer.email() != null) {
                         updatedFields.add(customer.email());
                         query += "email_address = ?, ";
                 }
-                if (customer.phoneNumber() != null){
+                if (customer.phoneNumber() != null) {
                         updatedFields.add(customer.phoneNumber());
                         query += "phone_number = ?, ";
                 }
-                updatedFields.add(customer.id());
+                updatedFields.add(id);
                 // Formatting query to remove last comma and add where
                 query = query.substring(0, query.length() - 2) + " WHERE customer_id = ?";
 

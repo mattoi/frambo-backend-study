@@ -24,39 +24,39 @@ public class ProductController {
 
     @PostMapping("")
     ResponseEntity<?> create(@ModelAttribute Product product) {
-        try{
+        try {
             return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
-        } catch (InvalidRequestException e){
+        } catch (InvalidRequestException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @PatchMapping(value = { "" }, params = { "id" })
-    ResponseEntity<?> update(@RequestParam("id") Integer id, @ModelAttribute Product product) {
-        try{
+    ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @ModelAttribute Product product) {
+        try {
             return new ResponseEntity<>(service.update(id, product), HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (InvalidRequestException e){
-            return new ResponseEntity<>(e.getMessages(),HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (InvalidRequestException e) {
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @GetMapping("")
     ResponseEntity<?> findAll() {
-        return new ResponseEntity<>( service.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/in_stock")
     ResponseEntity<?> findAllInStock() {
-        return new ResponseEntity<>( service.findAllInStock(), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllInStock(), HttpStatus.OK);
     }
 
     @GetMapping(value = { "" }, params = { "id" })
     ResponseEntity<?> findById(@RequestParam(name = "id") Integer id) {
-        try{
+        try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -72,20 +72,20 @@ public class ProductController {
 
     @PostMapping("/categories")
     ResponseEntity<?> createCategory(Category category) {
-        try{
+        try {
             return new ResponseEntity<>(service.createCategory(category), HttpStatus.CREATED);
-        }catch (InvalidRequestException e){
-            return new ResponseEntity<>(e.getMessages(),HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (InvalidRequestException e) {
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     @PatchMapping(value = { "/categories" }, params = { "id" })
     ResponseEntity<?> updateCategory(@RequestParam("id") Integer id, Category category) {
-        try{
-            return new ResponseEntity<>(service.updateCategory(id, category),HttpStatus.OK);
-        } catch (EntityNotFoundException e){
+        try {
+            return new ResponseEntity<>(service.updateCategory(id, category), HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (InvalidRequestException e){
+        } catch (InvalidRequestException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
