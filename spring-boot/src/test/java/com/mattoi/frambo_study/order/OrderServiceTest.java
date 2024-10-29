@@ -2,6 +2,7 @@ package com.mattoi.frambo_study.order;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDateTime;
@@ -35,25 +36,24 @@ public class OrderServiceTest {
 	@Autowired
 	private ProductService productService;
 
-	Integer customerId;
 	List<Product> products = new ArrayList<Product>();
 	List<Order> testOrders = new ArrayList<Order>();
 
 	@BeforeEach
 	void setup() throws InvalidRequestException, EntityNotFoundException {
 		// service.initializeStatus();
-		customerService.create(
+		var firstCustomerId = customerService.create(
 				new Customer(
 						null,
 						"Matheus",
 						"testmatheus@email.com",
-						"5559822222222"));
-		customerService.create(
+						"55598222222222"));
+		var secondCustomerId = customerService.create(
 				new Customer(
 						null,
 						"Cecilia",
 						"testcecilia@email.com",
-						"5559811111111"));
+						"55598111111111"));
 		productService.createCategory(new Category(null, "Test Cookie"));
 		productService.create(new Product(null,
 				"Test Cookie Original",
@@ -73,10 +73,9 @@ public class OrderServiceTest {
 				12.00,
 				true,
 				"Test Cookie"));
-		customerId = customerService.findByPhoneNumber("5559822222222").id();
 		products = productService.findAll();
 		testOrders = List.of(new Order(null,
-				customerId,
+				firstCustomerId,
 				List.of(
 						new OrderItem(
 								products.get(0).id(),
@@ -92,7 +91,7 @@ public class OrderServiceTest {
 				LocalDateTime.now(),
 				LocalDateTime.now()),
 				new Order(null,
-						customerId + 1,
+						secondCustomerId,
 						List.of(
 								new OrderItem(
 										products.get(0).id(),
@@ -110,47 +109,92 @@ public class OrderServiceTest {
 	}
 
 	@Test
-	public void shouldCreateNewOrder() throws InvalidRequestException {
-		Integer result = service.create(testOrders.get(0));
-		assertEquals(true, result != null);
+	public void shouldCreateNewOrder() {
+		try {
+			service.create(testOrders.get(0));
+		} catch (Exception e) {
+			fail("Exception thrown: " + e.getMessage());
+		}
+	}
+
+	// TODO not create invalid order
+
+	@Test
+	public void shouldUpdateOrderStatus() {
+		try {
+			var orderId = service.create(testOrders.get(0));
+			var result = service.updateOrderStatus(orderId, "SHIPPED");
+			assertEquals(true, result);
+		} catch (Exception e) {
+			fail("Exception thrown: " + e.getMessage());
+		}
+	}
+
+	// TODO should not update on invalid id
+
+	// TODO should not update with invalid status
+
+	@Test
+	public void shouldFindAllOrders() {
+		try {
+			service.create(testOrders.get(0));
+			var orders = service.findAll();
+			assertEquals(true, orders.size() >= 1);
+		} catch (Exception e) {
+			fail("Exception thrown: " + e.getMessage());
+		}
 	}
 
 	@Test
-	public void shouldUpdateOrderStatus() throws InvalidRequestException, EntityNotFoundException {
-		service.create(testOrders.get(0));
-		var orderId = service.findAllByCustomerId(customerId).get(0).id();
-		var result = service.updateOrderStatus(orderId, "SHIPPED");
-		assertEquals(true, result);
+	public void shouldFindOrderById() {
+		try {
+			var orderId = service.create(testOrders.get(0));
+			var savedOrder = service.findById(orderId);
+			assertEquals(orderId, savedOrder.id());
+		} catch (Exception e) {
+			fail("Exception thrown: " + e.getMessage());
+		}
 	}
+
+	// TODO should not find on invalid id
 
 	@Test
-	public void shouldFindAllOrders() throws InvalidRequestException {
-		service.create(testOrders.get(0));
-		var orders = service.findAll();
-		assertEquals(true, orders.size() >= 1);
+	public void shouldFindOrdersByCustomerId() {
+		try {
+			service.create(testOrders.get(0));
+			var secondTestOrderId = service.create(testOrders.get(1));
+			var ordersFromFirstCustomer = service.findAllByCustomerId(testOrders.get(0).customerId());
+			for (var order : ordersFromFirstCustomer) {
+				if (order.id() == secondTestOrderId) {
+					fail("Unexpected order found");
+				}
+			}
+		} catch (Exception e) {
+			fail("Exception thrown: " + e.getMessage());
+		}
 	}
+
+	// TODO should not find on invalid customer id
 
 	@Test
-	public void shouldFindOrderById() throws InvalidRequestException, EntityNotFoundException {
-		service.create(testOrders.get(0));
-		var orderId = service.findAll().get(0).id();
-		var savedOrder = service.findById(orderId);
-		assertEquals(orderId, savedOrder.id());
+	public void shouldFindOrdersByStatus() {
+		try {
+			var orderId = service.create(testOrders.get(0));
+			var pendingOrders = service.findAllByStatus("PAYMENT_PENDING");
+			var found = false;
+			for (var order : pendingOrders) {
+				if (order.id() == orderId) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				fail("Newly created not found with pending status");
+			}
+		} catch (Exception e) {
+			fail("Exception thrown: " + e.getMessage());
+		}
 	}
 
-	@Test
-	public void shouldFindOrdersByClientId() throws InvalidRequestException, EntityNotFoundException {
-		service.create(testOrders.get(0));
-		service.create(testOrders.get(1));
-		var ordersFromFirstCustomer = service.findAllByCustomerId(testOrders.get(0).customerId());
-		assertEquals(1, ordersFromFirstCustomer.size());
-	}
-
-	@Test
-	public void shouldFindOrdersByStatus() throws InvalidRequestException, EntityNotFoundException {
-		service.create(testOrders.get(0));
-		var pendingOrders = service.findAllByStatus("PAYMENT_PENDING");
-		assertEquals(true, pendingOrders.size() >= 1);
-	}
-
+	// TODO should not find on invalid status
 }
