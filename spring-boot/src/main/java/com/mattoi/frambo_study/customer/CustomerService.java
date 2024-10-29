@@ -19,7 +19,7 @@ public class CustomerService {
     private CustomerRepository repository;
 
     @Transactional
-    public int create(Customer customer) throws InvalidRequestException {
+    public Integer create(Customer customer) throws InvalidRequestException {
         var errors = new ArrayList<String>();
         if (customer.name() == null || customer.name().length() == 0) {
             errors.add("Name cannot be empty");
