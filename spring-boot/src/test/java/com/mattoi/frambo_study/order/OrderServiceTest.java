@@ -2,6 +2,7 @@ package com.mattoi.frambo_study.order;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -117,7 +118,12 @@ public class OrderServiceTest {
 		}
 	}
 
-	// TODO not create invalid order
+	@Test
+	public void shouldNotCreateInvalidOrder() {
+		assertThrows(InvalidRequestException.class, () -> {
+			service.create(new Order(null, null, null, null, null, null));
+		});
+	}
 
 	@Test
 	public void shouldUpdateOrderStatus() {
@@ -130,9 +136,21 @@ public class OrderServiceTest {
 		}
 	}
 
-	// TODO should not update on invalid id
+	@Test
+	public void shouldNotUpdateOnInvalidId() {
+		assertThrows(EntityNotFoundException.class, () -> {
+			service.updateOrderStatus(0, null);
+		});
+	}
 
-	// TODO should not update with invalid status
+	@Test
+	public void shouldNotUpdateWithInvalidStatus() {
+		assertThrows(InvalidRequestException.class, () -> {
+			// TO
+			var orderId = service.create(testOrders.get(0));
+			service.updateOrderStatus(orderId, "NOT A VALID STATUS");
+		});
+	}
 
 	@Test
 	public void shouldFindAllOrders() {
@@ -156,7 +174,12 @@ public class OrderServiceTest {
 		}
 	}
 
-	// TODO should not find on invalid id
+	@Test
+	public void shouldNotFindInvalidId() {
+		assertThrows(InvalidRequestException.class, () -> {
+			service.findById(0);
+		});
+	}
 
 	@Test
 	public void shouldFindOrdersByCustomerId() {
@@ -174,7 +197,13 @@ public class OrderServiceTest {
 		}
 	}
 
-	// TODO should not find on invalid customer id
+	@Test
+	public void shouldNotFindInvalidCustomerId() {
+		assertThrows(EntityNotFoundException.class, () -> {
+			service.findAllByCustomerId(0);
+
+		});
+	}
 
 	@Test
 	public void shouldFindOrdersByStatus() {
@@ -189,12 +218,17 @@ public class OrderServiceTest {
 				}
 			}
 			if (!found) {
-				fail("Newly created not found with pending status");
+				fail("Newly created order not found within pending list");
 			}
 		} catch (Exception e) {
 			fail("Exception thrown: " + e.getMessage());
 		}
 	}
 
-	// TODO should not find on invalid status
+	@Test
+	public void shouldNotFindWithInvalidStatus() {
+		assertThrows(InvalidRequestException.class, () -> {
+			service.findAllByStatus("STATUS THAT DOESN'T EXIST");
+		});
+	}
 }
