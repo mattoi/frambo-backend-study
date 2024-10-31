@@ -63,7 +63,7 @@ public class ProductServiceTest {
     @Test
     public void shouldNotCreateInvalidProduct() {
         assertThrows(InvalidRequestException.class, () -> {
-            service.create(testProducts.get(0));
+            service.create(new Product(null, null, null, null, null, null, null, null));
         });
     }
 
