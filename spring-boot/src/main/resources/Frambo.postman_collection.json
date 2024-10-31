@@ -89,46 +89,49 @@
 									"})",
 									""
 								],
-								"type": "text/javascript",
-								"packages": {}
+								"type": "text/javascript"
 							}
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "id",
-									"value": "2",
-									"type": "text"
-								},
-								{
 									"key": "name",
 									"value": "Cecilia",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "email",
 									"value": "cecilia@email.com",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "phoneNumber",
 									"value": "559822225555",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{baseUrl}}/customers",
+							"raw": "{{baseUrl}}/customers?id=1",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"customers"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
 							]
 						},
 						"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
@@ -139,7 +142,16 @@
 					"name": "All customers",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers"
+							]
+						}
 					},
 					"response": []
 				},
@@ -232,25 +244,22 @@
 				{
 					"name": "Update product",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "id",
-									"value": "1",
-									"type": "text"
-								},
-								{
 									"key": "name",
 									"value": "Cookie de Churros",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "description",
 									"value": "Cookie à base de manteiga com toques de canela e recheio de doce de leite",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "photoUrl",
@@ -261,11 +270,12 @@
 								{
 									"key": "netWeight",
 									"value": "120",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "price",
-									"value": "14.00",
+									"value": "15.00",
 									"type": "text"
 								},
 								{
@@ -276,17 +286,24 @@
 								{
 									"key": "category",
 									"value": "Cookie recheado",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{baseUrl}}/products",
+							"raw": "{{baseUrl}}/products?id=41",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "41"
+								}
 							]
 						}
 					},
@@ -381,10 +398,20 @@
 				{
 					"name": "Update category",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "\"Cookie com recheio\"",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{baseUrl}}/products/categories?id=2&name=Cookie com recheio",
+							"raw": "{{baseUrl}}/products/categories?id=6",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -394,12 +421,13 @@
 							],
 							"query": [
 								{
-									"key": "id",
-									"value": "2"
+									"key": "name",
+									"value": "Cookie com recheio",
+									"disabled": true
 								},
 								{
-									"key": "name",
-									"value": "Cookie com recheio"
+									"key": "id",
+									"value": "6"
 								}
 							]
 						}
@@ -435,7 +463,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"customerId\": 3,\r\n  \"totalAmount\": 28.00,\r\n  \"items\": [\r\n    {\r\n      \"productId\": 94,\r\n      \"productName\": \"Cookie original\",\r\n      \"productPrice\": 14.00,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n  \"customerId\": 3,\r\n  //\"totalAmount\": 28.00,\r\n  \"items\": [\r\n    {\r\n      \"productId\": 41,\r\n      \"productPrice\": 14.00,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -457,7 +485,7 @@
 				{
 					"name": "Update order status",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
