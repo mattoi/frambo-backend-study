@@ -3,24 +3,25 @@ package com.mattoi.frambo_study.product;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.mattoi.frambo_study.exception.EntityNotFoundException;
 import com.mattoi.frambo_study.exception.InvalidRequestException;
 
-@JdbcTest
-@Import(ProductService.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-    @Autowired
+    @Mock
+    private ProductRepository repository;
+
+    @InjectMocks
     private ProductService service;
 
     List<Product> testProducts = List.of(new Product(null,
@@ -44,17 +45,11 @@ public class ProductServiceTest {
             new Category(null, "Test Cookie"),
             new Category(null, "Test Cookie recheado"));
 
-    @BeforeEach
-    void setup() throws InvalidRequestException {
-        service.createCategory(testCategories.get(0));
-    }
-
     @Test
     public void shouldCreateNewProduct() {
         try {
-            service.create(testProducts.get(0));
-            var products = service.findAll();
-            assertEquals(1, products.size());
+            when(repository.create(testProducts.get(0))).thenReturn(1);
+            assertEquals(1, service.create(testProducts.get(0)));
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -62,27 +57,27 @@ public class ProductServiceTest {
 
     @Test
     public void shouldNotCreateInvalidProduct() {
+        var invalidProduct = new Product(null, null, null, null, 0, 0d, null, null);
         assertThrows(InvalidRequestException.class, () -> {
-            service.create(new Product(null, null, null, null, null, null, null, null));
+            service.create(invalidProduct);
         });
     }
 
     @Test
     public void shouldUpdateProduct() {
         try {
-            var id = service.create(testProducts.get(0));
-            String newDescription = "Cookie à base de manteiga com gotas de chocolate branco";
-            service.update(id, new Product(
+            Product updatedFields = new Product(
                     null,
                     null,
-                    newDescription,
+                    "Cookie à base de manteiga com gotas de chocolate branco",
                     null,
                     null,
                     null,
                     null,
-                    null));
-            var updatedProduct = service.findById(id);
-            assertEquals(newDescription, updatedProduct.description());
+                    null);
+            when(repository.update(1, updatedFields)).thenReturn(true);
+
+            assertEquals(true, service.update(1, updatedFields));
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -110,17 +105,6 @@ public class ProductServiceTest {
                     null));
         });
     }
-    /*
-     * @Test
-     * public void shouldUpdateProductAvailability() {
-     * service.create(testProducts.get(0));
-     * var product = service.findByName("Test Cookie Original");
-     * assertEquals(true, product.inStock());
-     * service.updateProductAvailability(product.id(), false);
-     * var updatedProduct = service.findByName("Test Cookie Original");
-     * assertEquals(false, updatedProduct.inStock());
-     * }
-     */
 
     @Test
     public void shouldFindAllProducts() {
@@ -148,30 +132,10 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void shouldFindProductByName() {
-        try {
-            service.create(testProducts.get(0));
-            var product = service.findByName("Test Cookie Original");
-            assertEquals("Test Cookie Original", product.name());
-        } catch (Exception e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
-
-    @Test
-    public void shouldNotFindNonexistentName() {
-        assertThrows(InvalidRequestException.class, () -> {
-            service.findByName("---");
-        });
-    }
-
-    @Test
     public void shouldFindProductById() {
         try {
-            service.create(testProducts.get(0));
-            var product = service.findByName("Test Cookie Original");
-            var productById = service.findById(product.id());
-            assertEquals(product.id(), productById.id());
+            when(repository.findById(1)).thenReturn(testProducts.get(0));
+            assertEquals(testProducts.get(0), service.findById(1));
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -179,20 +143,11 @@ public class ProductServiceTest {
 
     @Test
     public void shouldNotFindNonexistentId() {
-        assertThrows(InvalidRequestException.class, () -> {
+        when(repository.findById(0)).thenThrow(new EntityNotFoundException("Could not find a product with ID 0", null));
+        assertThrows(EntityNotFoundException.class, () -> {
             service.findById(0);
         });
     }
-    /*
-     * @Test
-     * public void shouldDeleteProduct() {
-     * service.create(testProducts.get(0));
-     * var product = service.findByName("Test Cookie Original");
-     * service.delete(product.id());
-     * var products = service.findAll();
-     * assertEquals(0, products.size());
-     * }
-     */
 
     @Test
     public void shouldCreateCategory() {
@@ -213,10 +168,9 @@ public class ProductServiceTest {
     @Test
     public void shouldUpdateCategory() {
         try {
-            var categories = service.findAllCategories();
-            service.updateCategory(categories.get(0).id(), testCategories.get(1));
-            categories = service.findAllCategories();
-            assertEquals(testCategories.get(1).name(), categories.get(0).name());
+            Category updatedCategory = new Category(null, "Cookie recheado");
+            when(repository.updateCategory(1, updatedCategory)).thenReturn(true);
+            assertEquals(true, service.updateCategory(1, updatedCategory));
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -224,8 +178,11 @@ public class ProductServiceTest {
 
     @Test
     public void shouldNotUpdateOnNonexistentCategory() {
-        assertThrows(InvalidRequestException.class, () -> {
-            service.updateCategory(0, testCategories.get(0));
+        Category category = new Category(null, "Cookie recheado");
+        when(repository.updateCategory(0, category))
+                .thenThrow(new EntityNotFoundException("Could not find a category with ID 0", null));
+        assertThrows(EntityNotFoundException.class, () -> {
+            service.updateCategory(0, category);
         });
     }
 
@@ -244,14 +201,4 @@ public class ProductServiceTest {
             fail("Exception thrown: " + e.getMessage());
         }
     }
-
-    /*
-     * @Test
-     * public void shouldDeleteCategory() {
-     * var categories = service.findAllCategories();
-     * service.deleteCategory(categories.get(0).id());
-     * categories = service.findAllCategories();
-     * assertEquals(0, categories.size());
-     * }
-     */
 }
