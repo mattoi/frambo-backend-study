@@ -3,9 +3,16 @@ package com.mattoi.frambo_study.customer;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -14,11 +21,12 @@ import org.springframework.context.annotation.Import;
 import com.mattoi.frambo_study.exception.EntityNotFoundException;
 import com.mattoi.frambo_study.exception.InvalidRequestException;
 
-@JdbcTest
-@Import(CustomerService.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
-	@Autowired
+	@Mock
+	private CustomerRepository repository;
+
+	@InjectMocks
 	private CustomerService service;
 
 	@BeforeEach
@@ -37,19 +45,24 @@ public class CustomerServiceTest {
 						"5598222222222"));
 	}
 
+	// * looking fine
 	@Test
 	public void shouldCreateNewCustomer() {
 		try {
-			service.create(new Customer(null, "Ayla", null, "5598333333333"));
+			Customer customer = new Customer(null, "Ayla", null, "5598333333333");
+			/* when(repository.create(customer)).thenReturn(1); */
+			service.create(customer);
 		} catch (Exception e) {
 			fail("Exception thrown: " + e.getMessage());
 		}
 	}
 
+	// * looking fine
 	@Test
 	public void shouldNotCreateInvalidCustomer() {
 		assertThrows(InvalidRequestException.class, () -> {
-			service.create(new Customer(null, null, null, "559833333333"));
+			Customer customer = new Customer(null, null, null, "559833333333");
+			service.create(customer);
 		});
 	}
 
@@ -93,6 +106,7 @@ public class CustomerServiceTest {
 		}
 	}
 
+	@Test
 	public void shouldNotFindNonexistentId() {
 		assertThrows(EntityNotFoundException.class, () -> {
 			service.findById(0);
@@ -112,12 +126,14 @@ public class CustomerServiceTest {
 
 	}
 
+	@Test
 	public void shouldNotUpdateInvalidFields() {
 		assertThrows(InvalidRequestException.class, () -> {
 			service.update(1, new Customer(null, "", null, null));
 		});
 	}
 
+	@Test
 	public void shouldNotUpdateNonexistentId() {
 		assertThrows(EntityNotFoundException.class, () -> {
 			service.update(0, new Customer(null, "Matheus", null, null));
