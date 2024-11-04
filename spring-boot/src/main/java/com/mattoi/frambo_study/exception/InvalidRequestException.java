@@ -5,8 +5,8 @@ import java.util.List;
 public class InvalidRequestException extends RuntimeException {
     private final List<String> errorMessages;
 
-    public InvalidRequestException(String errorMessage, List<String> errorMessages, Throwable err) {
-        super(errorMessage);
+    public InvalidRequestException(List<String> errorMessages, Throwable err) {
+        super("Invalid request fields");
         this.errorMessages = errorMessages;
     }
 

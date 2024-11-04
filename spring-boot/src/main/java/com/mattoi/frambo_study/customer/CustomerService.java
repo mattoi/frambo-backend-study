@@ -45,7 +45,7 @@ public class CustomerService {
             if (errors.size() == 0) {
                 return repository.create(customer);
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
         } catch (DuplicateKeyException e) {
             // TODO find a way to specify the unique field
@@ -56,7 +56,7 @@ public class CustomerService {
              * " is already in use.");
              */
             errors.add("One or more unique fields is already in use");
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 
@@ -66,7 +66,7 @@ public class CustomerService {
         var errors = new ArrayList<String>();
 
         if (customer.name() == null && customer.email() == null && customer.phoneNumber() == null) {
-            throw new InvalidRequestException("Invalid request fields", List.of("At least one field is required"),
+            throw new InvalidRequestException(List.of("At least one field is required"),
                     null);
         }
 
@@ -103,13 +103,13 @@ public class CustomerService {
                     throw new EntityNotFoundException("Couldn't find a customer with ID " + id, null);
                 }
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
         } catch (IndexOutOfBoundsException e) {
             throw new EntityNotFoundException("Couldn't find a customer with ID " + id, e);
         } catch (DuplicateKeyException e) {
             errors.add(e.getMessage());
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 

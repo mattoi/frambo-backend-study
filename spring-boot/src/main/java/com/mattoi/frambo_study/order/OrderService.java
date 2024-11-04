@@ -49,16 +49,16 @@ public class OrderService {
             if (errors.size() == 0) {
                 return repository.create(order);
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
             // TODO find a way to include both customer and products errors; this is only
             // detecting one or the other
         } catch (CustomerNotFoundException e) {
             errors.add(e.getMessage());
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         } catch (ProductsNotFoundException e) {
             errors.addAll(e.getMessages());
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 
@@ -75,8 +75,7 @@ public class OrderService {
         } catch (IndexOutOfBoundsException e) {
             throw new EntityNotFoundException("Couldn't find an order with ID " + id, e);
         } catch (DataIntegrityViolationException e) { // k
-            throw new InvalidRequestException("Invalid request fields",
-                    List.of("Invalid status"), e);
+            throw new InvalidRequestException(List.of("Invalid status"), e);
         }
     }
 

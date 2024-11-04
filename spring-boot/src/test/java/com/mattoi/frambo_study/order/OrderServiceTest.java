@@ -142,7 +142,7 @@ public class OrderServiceTest {
 
 	@Test
 	public void shouldNotUpdateWithInvalidStatus() {
-		when(repository.updateOrderStatus(1, "NOT A VALID STATUS")).thenThrow(new InvalidRequestException("Invalid request fields", List.of("Invalid status"), null));
+		when(repository.updateOrderStatus(1, "NOT A VALID STATUS")).thenThrow(new InvalidRequestException( List.of("Invalid status"), null));
 		assertThrows(InvalidRequestException.class, () -> {
 			service.updateOrderStatus(1, "NOT A VALID STATUS");
 		});
@@ -209,7 +209,7 @@ public class OrderServiceTest {
 
 	@Test
 	public void shouldNotFindWithInvalidStatus() {
-			when(repository.findAllByStatus("STATUS THAT DOESN'T EXIST")).thenThrow(new InvalidRequestException("Invalid status", null, null));
+			when(repository.findAllByStatus("STATUS THAT DOESN'T EXIST")).thenThrow(new InvalidRequestException( List.of("Invalid status"), null));
 		assertThrows(InvalidRequestException.class, () -> {
 			service.findAllByStatus("STATUS THAT DOESN'T EXIST");
 		});

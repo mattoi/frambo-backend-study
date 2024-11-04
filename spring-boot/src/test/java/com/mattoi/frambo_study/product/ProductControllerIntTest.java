@@ -70,7 +70,7 @@ public class ProductControllerIntTest {
         try {
             Product invalidProduct = new Product(null, null, null, null, null, null, null, null);
             when(service.create(invalidProduct)).thenThrow(
-                    new InvalidRequestException("Invalid request fields", List.of("Fields are empty"), null));
+                    new InvalidRequestException(List.of("Fields are empty"), null));
             mockMvc.perform(post("/api/products")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper
@@ -139,7 +139,7 @@ public class ProductControllerIntTest {
                     null,
                     null);
             when(service.update(1, invalidFields)).thenThrow(
-                    new InvalidRequestException("Invalid request fields", List.of("There are no fields"), null));
+                    new InvalidRequestException(List.of("There are no fields"), null));
             mockMvc.perform(patch("/api/products?id=1").contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(invalidFields)))
                     .andExpect(status().isUnprocessableEntity());
@@ -218,7 +218,7 @@ public class ProductControllerIntTest {
         try {
             Category invalidCategory = new Category(null, null);
             when(service.createCategory(invalidCategory)).thenThrow(
-                    new InvalidRequestException("Invalid request fields", List.of("Category cannot be empty"), null));
+                    new InvalidRequestException(List.of("Category cannot be empty"), null));
             mockMvc.perform(
                     post("/api/products/categories")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -260,8 +260,8 @@ public class ProductControllerIntTest {
     public void shouldNotUpdateInvalidCategory() {
         try {
             Category invalidCategory = new Category(null, null);
-            when(service.updateCategory(1, invalidCategory)).thenThrow(new InvalidRequestException(
-                    "Invalid request fields", List.of("Category name cannot be null"), null));
+            when(service.updateCategory(1, invalidCategory))
+                    .thenThrow(new InvalidRequestException(List.of("Category name cannot be null"), null));
             mockMvc.perform(patch("/api/products/categories?id=1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(new Category(null, null))))

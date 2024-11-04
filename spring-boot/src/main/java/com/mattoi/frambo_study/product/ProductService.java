@@ -54,11 +54,11 @@ public class ProductService {
             if (errors.isEmpty()) {
                 return repository.create(product);
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
         } catch (DuplicateKeyException e) {
             errors.add("One of the fields is already in use");
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 
@@ -69,7 +69,7 @@ public class ProductService {
         if (product.name() == null && product.description() == null && product.photoUrl() == null
                 && product.netWeight() == null && product.price() == null && product.inStock() == null
                 && product.category() == null) {
-            throw new InvalidRequestException("Invalid request fields", List.of("At least one field is required"),
+            throw new InvalidRequestException(List.of("At least one field is required"),
                     null);
         }
 
@@ -126,13 +126,13 @@ public class ProductService {
                     throw new EntityNotFoundException("Couldn't find a product with ID " + id, null);
                 }
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException("Couldn't find a product with ID " + id, e);
         } catch (DuplicateKeyException e) {
             errors.add(e.getMessage());
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 
@@ -176,11 +176,11 @@ public class ProductService {
             if (errors.size() == 0) {
                 return repository.createCategory(category);
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
         } catch (DuplicateKeyException e) {
             errors.add("A category with the same name already exists");
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 
@@ -198,13 +198,13 @@ public class ProductService {
             if (errors.size() == 0) {
                 return repository.updateCategory(id, category);
             } else {
-                throw new InvalidRequestException("Invalid request fields", errors, null);
+                throw new InvalidRequestException(errors, null);
             }
         } catch (IndexOutOfBoundsException e) {
             throw new EntityNotFoundException("Couldn't find a product with ID " + id, e);
         } catch (DuplicateKeyException e) {
             errors.add("A category with the same name already exists");
-            throw new InvalidRequestException("Invalid request fields", errors, e);
+            throw new InvalidRequestException(errors, e);
         }
     }
 

@@ -60,8 +60,7 @@ public class CustomerControllerIntTest {
 	public void shouldNotCreateInvalidCustomer() throws JsonProcessingException, Exception {
 
 		when(service.create(invalidCustomer))
-				.thenThrow(new InvalidRequestException("Invalid request fields",
-						List.of("Name cannot be empty", "Phone number cannot be empty"), null));
+				.thenThrow(new InvalidRequestException(List.of("Name cannot be empty", "Phone number cannot be empty"), null));
 
 		mockMvc.perform(post("/api/customers")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -114,8 +113,8 @@ public class CustomerControllerIntTest {
 	public void shouldNotUpdateInvalidFields() throws JsonProcessingException, Exception {
 		int id = 1;
 		when(service.update(id, invalidCustomer))
-				.thenThrow(new InvalidRequestException("Invalid request fields",
-						List.of("Name cannot be empty", "Phone number cannot be empty"), null));
+				.thenThrow(new InvalidRequestException(List.of("Name cannot be empty", "Phone number cannot be empty"),
+						null));
 
 		mockMvc.perform(patch("/api/customers?id=" + id)
 				.contentType(MediaType.APPLICATION_JSON)
