@@ -1,11 +1,11 @@
 package com.mattoi.frambo_study.product;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping("")
-    ResponseEntity<?> create(@ModelAttribute Product product) {
+    ResponseEntity<?> create(@RequestBody Product product) {
         try {
             return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
         } catch (InvalidRequestException e) {
@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @PatchMapping(value = { "" }, params = { "id" })
-    ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @ModelAttribute Product product) {
+    ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @RequestBody Product product) {
         try {
             return new ResponseEntity<>(service.update(id, product), HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException e) {
@@ -80,7 +80,7 @@ public class ProductController {
     }
 
     @PatchMapping(value = { "/categories" }, params = { "id" })
-    ResponseEntity<?> updateCategory(@RequestParam("id") Integer id, Category category) {
+    ResponseEntity<?> updateCategory(@RequestParam("id") Integer id, @RequestBody Category category) {
         try {
             return new ResponseEntity<>(service.updateCategory(id, category), HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException e) {
