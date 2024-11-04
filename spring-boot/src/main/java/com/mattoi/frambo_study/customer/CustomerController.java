@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mattoi.frambo_study.exception.EntityNotFoundException;
 import com.mattoi.frambo_study.exception.InvalidRequestException;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PatchMapping;
 
 @RestController
@@ -24,21 +26,21 @@ public class CustomerController {
     }
 
     @PostMapping("")
-    ResponseEntity<?> create(@ModelAttribute Customer newCustomer) {
+    ResponseEntity<?> create(@Valid @RequestBody Customer newCustomer) {
         try {
-           return new ResponseEntity<>(service.create(newCustomer), HttpStatus.CREATED);
+            return new ResponseEntity<>(service.create(newCustomer), HttpStatus.CREATED);
         } catch (InvalidRequestException e) {
-           return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
-        } 
-  }
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
 
     @PatchMapping(value = { "" }, params = { "id" })
-    ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @ModelAttribute Customer updatedCustomer) {
-        try{
+    ResponseEntity<?> update(@RequestParam(name = "id") Integer id, @RequestBody Customer updatedCustomer) {
+        try {
             return new ResponseEntity<>(service.update(id, updatedCustomer), HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (InvalidRequestException e){
+        } catch (InvalidRequestException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -50,11 +52,11 @@ public class CustomerController {
 
     @GetMapping(value = { "" }, params = { "id" })
     ResponseEntity<?> findById(@RequestParam(name = "id") Integer id) {
-        try{
+        try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } 
+        }
     }
 
     // consider avoid deleting customers
