@@ -8,20 +8,26 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mattoi.frambo_study.exception.EntityNotFoundException;
+import com.mattoi.frambo_study.exception.InvalidRequestException;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@WebMvcTest(ProductController.class)
 public class ProductControllerIntTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private ProductService service;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -48,26 +54,12 @@ public class ProductControllerIntTest {
             new Category(null, "Test Cookie recheado"));
 
     @Test
-    public void createProduct_ShouldReturn201_WhenProductIsCreated() throws Exception {
-        /*
-         * Product newProduct = new Product("New Product",
-         * "A description of the new product", 19.99, 50);
-         * 
-         * mockMvc.perform(post("/api/products")
-         * .contentType(MediaType.APPLICATION_JSON)
-         * .content(objectMapper.writeValueAsString(newProduct))) // Convert object to
-         * JSON
-         * .andExpect(status().isCreated())
-         * .andExpect(header().exists("Location"));
-         */
-    }
-
-    @Test
     public void shouldCreateNewProduct() {
         try {
             mockMvc.perform(post("/api/products")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testProducts.get(0))))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isCreated());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -76,10 +68,14 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotCreateInvalidProduct() {
         try {
+            Product invalidProduct = new Product(null, null, null, null, null, null, null, null);
+            when(service.create(invalidProduct)).thenThrow(
+                    new InvalidRequestException("Invalid request fields", List.of("Fields are empty"), null));
             mockMvc.perform(post("/api/products")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper
-                            .writeValueAsString(new Product(null, null, null, null, null, null, null, null))))
-                    .andExpect(status().isOk());
+                            .writeValueAsString(invalidProduct)))
+                    .andExpect(status().isUnprocessableEntity());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -88,18 +84,20 @@ public class ProductControllerIntTest {
     @Test
     public void shouldUpdateProduct() {
         try {
-            var id = mockMvc.perform(post("/api/products")
-                    .content(objectMapper.writeValueAsString(testProducts.get(0))));
-            String newDescription = "Cookie à base de manteiga com gotas de chocolate branco";
-            mockMvc.perform(patch("/api/products?id=" + id).content(objectMapper.writeValueAsString(new Product(
+            Product updatedFields = new Product(
                     null,
                     null,
-                    newDescription,
+                    "Cookie à base de manteiga com gotas de chocolate branco",
                     null,
                     null,
                     null,
                     null,
-                    null)))).andExpect(status().isNoContent());
+                    null);
+            when(service.update(1, updatedFields)).thenReturn(true);
+            mockMvc.perform(patch("/api/products?id=1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updatedFields)))
+                    .andExpect(status().isNoContent());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -108,7 +106,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotUpdateOnNonExistentId() {
         try {
-            mockMvc.perform(patch("/api/products?id=0").content(objectMapper.writeValueAsString(new Product(
+            Product updatedFields = new Product(
                     null,
                     null,
                     "a",
@@ -116,7 +114,13 @@ public class ProductControllerIntTest {
                     null,
                     null,
                     null,
-                    null)))).andExpect(status().isNotFound());
+                    null);
+            when(service.update(0, updatedFields))
+                    .thenThrow(new EntityNotFoundException("Couldn't find a product with ID 0", null));
+            mockMvc.perform(patch("/api/products?id=0")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updatedFields)))
+                    .andExpect(status().isNotFound());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -125,9 +129,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotUpdateInvalidProduct() {
         try {
-            var id = mockMvc.perform(post("/api/products")
-                    .content(objectMapper.writeValueAsString(testProducts.get(0))));
-            mockMvc.perform(patch("/api/products?id=" + id).content(objectMapper.writeValueAsString(new Product(
+            Product invalidFields = new Product(
                     null,
                     null,
                     null,
@@ -135,7 +137,12 @@ public class ProductControllerIntTest {
                     null,
                     null,
                     null,
-                    null)))).andExpect(status().isUnprocessableEntity());
+                    null);
+            when(service.update(1, invalidFields)).thenThrow(
+                    new InvalidRequestException("Invalid request fields", List.of("There are no fields"), null));
+            mockMvc.perform(patch("/api/products?id=1").contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(invalidFields)))
+                    .andExpect(status().isUnprocessableEntity());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -154,8 +161,10 @@ public class ProductControllerIntTest {
     public void shouldFindAllProductsInStock() {
         try {
             mockMvc.perform(post("/api/products")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testProducts.get(0))));
             mockMvc.perform(post("/api/products")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testProducts.get(1))));
             var jsonResponse = mockMvc.perform(get("/api/products")).andReturn().getResponse().getContentAsString();
 
@@ -174,9 +183,8 @@ public class ProductControllerIntTest {
     @Test
     public void shouldFindProductById() {
         try {
-            var id = mockMvc.perform(post("/api/products")
-                    .content(objectMapper.writeValueAsString(testProducts.get(0))));
-            mockMvc.perform(get("/api/products?id=" + id)).andExpect(status().isOk());
+            when(service.findById(1)).thenReturn(testProducts.get(0));
+            mockMvc.perform(get("/api/products?id=1")).andExpect(status().isOk());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -185,7 +193,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotFindNonexistentId() {
         try {
-
+            when(service.findById(0)).thenThrow(new EntityNotFoundException("Couldn't find a product with ID 0", null));
             mockMvc.perform(get("/api/products?id=0")).andExpect(status().isNotFound());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -197,6 +205,7 @@ public class ProductControllerIntTest {
         try {
             mockMvc.perform(
                     post("/api/products/categories")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testCategories.get(1))))
                     .andExpect(status().isCreated());
         } catch (Exception e) {
@@ -207,9 +216,13 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotCreateInvalidCategory() {
         try {
+            Category invalidCategory = new Category(null, null);
+            when(service.createCategory(invalidCategory)).thenThrow(
+                    new InvalidRequestException("Invalid request fields", List.of("Category cannot be empty"), null));
             mockMvc.perform(
                     post("/api/products/categories")
-                            .content(objectMapper.writeValueAsString(new Category(null, null))))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(invalidCategory)))
                     .andExpect(status().isUnprocessableEntity());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -219,9 +232,9 @@ public class ProductControllerIntTest {
     @Test
     public void shouldUpdateCategory() {
         try {
-            var id = mockMvc.perform(post("/api/products/categories")
-                    .content(objectMapper.writeValueAsString(testCategories.get(0))));
-            mockMvc.perform(patch("/api/products/categories?id=" + id)
+            when(service.updateCategory(1, testCategories.get(1))).thenReturn(true);
+            mockMvc.perform(patch("/api/products/categories?id=1")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testCategories.get(1))))
                     .andExpect(status().isNoContent());
         } catch (Exception e) {
@@ -232,10 +245,11 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotUpdateOnNonexistentCategory() {
         try {
-            var id = mockMvc.perform(post("/api/products/categories")
-                    .content(objectMapper.writeValueAsString(testCategories.get(0))));
-            mockMvc.perform(patch("/api/products/categories?id=" + id)
-                    .content(objectMapper.writeValueAsString(testCategories.get(1))))
+            when(service.updateCategory(0, testCategories.get(0)))
+                    .thenThrow(new EntityNotFoundException("Couldn't find a category with ID 0", null));
+            mockMvc.perform(patch("/api/products/categories?id=0")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(testCategories.get(0))))
                     .andExpect(status().isNotFound());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -245,9 +259,11 @@ public class ProductControllerIntTest {
     @Test
     public void shouldNotUpdateInvalidCategory() {
         try {
-            var id = mockMvc.perform(post("/api/products/categories")
-                    .content(objectMapper.writeValueAsString(testCategories.get(0))));
-            mockMvc.perform(patch("/api/products/categories?id=" + id)
+            Category invalidCategory = new Category(null, null);
+            when(service.updateCategory(1, invalidCategory)).thenThrow(new InvalidRequestException(
+                    "Invalid request fields", List.of("Category name cannot be null"), null));
+            mockMvc.perform(patch("/api/products/categories?id=1")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(new Category(null, null))))
                     .andExpect(status().isUnprocessableEntity());
         } catch (Exception e) {
