@@ -17,13 +17,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import com.mattoi.frambo_study.customer.Customer;
-import com.mattoi.frambo_study.customer.CustomerService;
 import com.mattoi.frambo_study.exception.EntityNotFoundException;
 import com.mattoi.frambo_study.exception.InvalidRequestException;
-import com.mattoi.frambo_study.product.Category;
 import com.mattoi.frambo_study.product.Product;
-import com.mattoi.frambo_study.product.ProductService;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
