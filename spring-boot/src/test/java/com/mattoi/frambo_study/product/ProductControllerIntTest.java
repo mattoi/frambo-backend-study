@@ -56,6 +56,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldCreateNewProduct() {
         try {
+            when(service.create(testProducts.get(0))).thenReturn(1);
             mockMvc.perform(post("/api/products")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testProducts.get(0))))
@@ -151,6 +152,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldFindAllProducts() {
         try {
+            when(service.findAll()).thenReturn(testProducts);
             mockMvc.perform(get("/api/products")).andExpect(status().isOk());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -160,14 +162,8 @@ public class ProductControllerIntTest {
     @Test
     public void shouldFindAllProductsInStock() {
         try {
-            mockMvc.perform(post("/api/products")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(testProducts.get(0))));
-            mockMvc.perform(post("/api/products")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(testProducts.get(1))));
+            when(service.findAllInStock()).thenReturn(List.of(testProducts.get(0)));
             var jsonResponse = mockMvc.perform(get("/api/products")).andReturn().getResponse().getContentAsString();
-
             var productsInStock = objectMapper.readValue(jsonResponse, new TypeReference<List<Product>>() {
             });
             for (var product : productsInStock) {
@@ -203,6 +199,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldCreateCategory() {
         try {
+            when(service.createCategory(testCategories.get(1))).thenReturn(1);
             mockMvc.perform(
                     post("/api/products/categories")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -274,6 +271,7 @@ public class ProductControllerIntTest {
     @Test
     public void shouldFindAllCategories() {
         try {
+            when(service.findAllCategories()).thenReturn(testCategories);
             mockMvc.perform(get("/api/products/categories")).andExpect(status().isOk());
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());

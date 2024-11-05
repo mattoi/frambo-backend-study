@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import com.mattoi.frambo_study.exception.EntityNotFoundException;
 import com.mattoi.frambo_study.exception.InvalidRequestException;
 import com.mattoi.frambo_study.product.Product;
@@ -62,53 +60,10 @@ public class OrderServiceTest {
 					LocalDateTime.now(),
 					LocalDateTime.now()));
 
-	@BeforeEach
-	void setup() throws InvalidRequestException, EntityNotFoundException {
-		/* CustomerService customerService = new CustomerService(); */
-		// service.initializeStatus();
-		/*
-		 * var firstCustomerId = customerService.create(
-		 * new Customer(
-		 * null,
-		 * "Matheus",
-		 * "testmatheus@email.com",
-		 * "55598222222222"));
-		 * var secondCustomerId = customerService.create(
-		 * new Customer(
-		 * null,
-		 * "Cecilia",
-		 * "testcecilia@email.com",
-		 * "55598111111111"));
-		 * ProductService productService = new ProductService();
-		 * productService.createCategory(new Category(null, "Test Cookie"));
-		 */
-		/*
-		 * var testProducts = List.of(new Product(null,
-		 * "Test Cookie Original",
-		 * "tCookie à base de manteiga com gotas de chocolate",
-		 * null,
-		 * 120,
-		 * 14.00,
-		 * true,
-		 * "Test Cookie"),
-		 * new Product(
-		 * null,
-		 * "Test Cookie pink lemonade",
-		 * "tCookie à base de limão siciliano com gotas de Ruby Chocolate",
-		 * null,
-		 * 120,
-		 * 12.00,
-		 * true,
-		 * "Test Cookie"));
-		 */
-
-		/* products = productService.findAll(); */
-
-	}
-
 	@Test
 	public void shouldCreateNewOrder() {
 		try {
+			when(repository.create(testOrders.get(0))).thenReturn(1);
 			service.create(testOrders.get(0));
 		} catch (Exception e) {
 			fail("Exception thrown: " + e.getMessage());
@@ -135,8 +90,9 @@ public class OrderServiceTest {
 
 	@Test
 	public void shouldNotUpdateOnInvalidId() {
+		when(repository.updateOrderStatus(0,"SHIPPED")).thenThrow(new EntityNotFoundException("Couldn't find an order with ID 0", null));
 		assertThrows(EntityNotFoundException.class, () -> {
-			service.updateOrderStatus(0, null);
+			service.updateOrderStatus(0, "SHIPPED");
 		});
 	}
 

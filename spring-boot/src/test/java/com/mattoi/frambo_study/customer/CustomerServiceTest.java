@@ -97,14 +97,17 @@ public class CustomerServiceTest {
 	@Test
 	public void shouldNotUpdateInvalidFields() {
 		assertThrows(InvalidRequestException.class, () -> {
-			service.update(1, new Customer(null, "", null, null));
+			service.update(1, invalidCustomer);
 		});
 	}
 
 	@Test
 	public void shouldNotUpdateNonexistentId() {
+		Customer updatedFields = new Customer(null, "Matheus", null, null);
+		when(repository.update(0, updatedFields))
+				.thenThrow(new EntityNotFoundException("Couldn't find a customer with ID 0", null));
 		assertThrows(EntityNotFoundException.class, () -> {
-			service.update(0, new Customer(null, "Matheus", null, null));
+			service.update(0, updatedFields);
 		});
 	}
 

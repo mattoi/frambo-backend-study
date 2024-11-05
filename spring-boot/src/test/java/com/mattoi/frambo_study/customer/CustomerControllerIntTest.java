@@ -44,12 +44,7 @@ public class CustomerControllerIntTest {
 
 	@Test
 	public void shouldCreateNewCustomer() throws JsonProcessingException, Exception {
-
-		/*
-		 * when(customerService.create(testCustomer))
-		 * .thenReturn(1);
-		 */
-
+		when(service.create(testCustomer)).thenReturn(1);
 		mockMvc.perform(post("/api/customers")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(testCustomer)))
@@ -58,10 +53,8 @@ public class CustomerControllerIntTest {
 
 	@Test
 	public void shouldNotCreateInvalidCustomer() throws JsonProcessingException, Exception {
-
 		when(service.create(invalidCustomer))
 				.thenThrow(new InvalidRequestException(List.of("Name cannot be empty", "Phone number cannot be empty"), null));
-
 		mockMvc.perform(post("/api/customers")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(invalidCustomer)))
@@ -70,6 +63,7 @@ public class CustomerControllerIntTest {
 
 	@Test
 	public void shouldFindAllCustomers() throws Exception {
+		when(service.findAll()).thenReturn(List.of(testCustomer));
 		mockMvc.perform(get("/api/customers")).andExpect(status().isOk());
 	}
 

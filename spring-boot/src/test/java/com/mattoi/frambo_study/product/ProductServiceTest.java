@@ -76,7 +76,6 @@ public class ProductServiceTest {
                     null,
                     null);
             when(repository.update(1, updatedFields)).thenReturn(true);
-
             assertEquals(true, service.update(1, updatedFields));
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -85,6 +84,7 @@ public class ProductServiceTest {
 
     @Test
     public void shouldNotUpdateOnNonExistentId() {
+        when(repository.update(0,testProducts.get(1))).thenThrow(new EntityNotFoundException("Couldn't find a product with ID 0", null));
         assertThrows(EntityNotFoundException.class, () -> {
             service.update(0, testProducts.get(1));
         });
@@ -92,23 +92,24 @@ public class ProductServiceTest {
 
     @Test
     public void shouldNotUpdateInvalidProduct() {
+        Product invalidProduct = new Product(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
         assertThrows(InvalidRequestException.class, () -> {
-            int id = service.create(testProducts.get(0));
-            service.update(id, new Product(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null));
+            service.update(1, invalidProduct);
         });
     }
 
     @Test
     public void shouldFindAllProducts() {
         try {
+            when(repository.findAll()).thenReturn(testProducts);
             service.findAll();
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -118,8 +119,7 @@ public class ProductServiceTest {
     @Test
     public void shouldFindAllProductsInStock() {
         try {
-            service.create(testProducts.get(0));
-            service.create(testProducts.get(1));
+            when(repository.findAllInStock()).thenReturn(List.of(testProducts.get(0)));
             var productsInStock = service.findAllInStock();
             for (var product : productsInStock) {
                 if (product.inStock() == false) {
@@ -152,6 +152,7 @@ public class ProductServiceTest {
     @Test
     public void shouldCreateCategory() {
         try {
+            when(repository.createCategory(testCategories.get(1))).thenReturn(1);
             service.createCategory(testCategories.get(1));
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
@@ -196,6 +197,7 @@ public class ProductServiceTest {
     @Test
     public void shouldFindAllCategories() {
         try {
+            when(repository.findAllCategories()).thenReturn(testCategories);
             service.findAllCategories();
         } catch (Exception e) {
             fail("Exception thrown: " + e.getMessage());
