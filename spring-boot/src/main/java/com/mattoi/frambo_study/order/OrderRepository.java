@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -45,9 +47,9 @@ public class OrderRepository {
 							LocalDateTime.now(),
 							LocalDateTime.now())
 					.update();
-		} catch (Exception e) { // TODO find out what exception this is
+		} catch (DataIntegrityViolationException e) {
 			throw new CustomerNotFoundException(
-					"Couldn't find a customer with ID " + order.customerId() + e.getMessage(), e);
+					"Couldn't find a customer with ID " + order.customerId(), e);
 		}
 		var orders = jdbcClient.sql(
 				"SELECT o.order_id FROM Orders o "
@@ -61,7 +63,7 @@ public class OrderRepository {
 				updated += jdbcClient
 						.sql("INSERT INTO OrderItems(order_id, product_id, quantity) values(?,?,?)")
 						.params(newOrderId, item.productId(), item.quantity()).update();
-			} catch (Exception e) {
+			} catch (DataIntegrityViolationException e) {
 				errors.add("Couldn't find a product with ID " + item.productId());
 			}
 		}
