@@ -6,7 +6,7 @@ This project features a PostgreSQL database and a repository layer using JDBC. T
 
 For learning purposes, I tried to do as much manual work as possible so I understand how things work without relying on too many abstractions. This includes using JDBC over JPA or CrudRepository, and manually writing the API docs instead of using SpringDoc.
 
-There are also unit tests for the service layer and integration tests for the controller layer. I wrote one test of each type for each possible response code, i.e successfully update customer (204)/ failed to find customer to update (404) / invalid fields for updating (422). Windows and my mobo are giving me a very hard time so I couldn't run the updated tests just yet.
+There are also unit tests for the service layer and integration tests for the controller layer. I wrote one test of each type for each possible response code, i.e successfully update customer (204)/ failed to find customer to update (404) / invalid fields for updating (422). All the tests are working properly.
 
 As for the remaining tasks, there are only small readability and refactoring things, so I can do these later. The core features of the application should be working exactly as I wanted them to.
 
