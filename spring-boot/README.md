@@ -11,7 +11,6 @@ There are also unit tests for the service layer and integration tests for the co
 As for the remaining tasks, there are only small readability and refactoring things, so I can do these later. The core features of the application should be working exactly as I wanted them to.
 
 ### TODO
-- Make sure the unit and integration tests are working.
 - Use the logger where applicable.
 - Consider implementing better null checking across the project.
 - Implement authentication.
